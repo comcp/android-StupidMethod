@@ -25,12 +25,12 @@ abstract public class XFragView implements IFragView {
 		return mRoot;
 	}
 
-	XFragView gone() {
+	public XFragView gone() {
 		mRoot.setVisibility(View.GONE);
 		return this;
 	}
 
-	XFragView show() {
+	public XFragView show() {
 		mRoot.setVisibility(View.VISIBLE);
 
 		return this;
