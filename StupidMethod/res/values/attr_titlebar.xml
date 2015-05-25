@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="TitleBar">
+
+        <!-- 右边外侧文字 -->
+        <attr name="right_tv_1" format="string" />
+        <!-- 右边内侧图片 -->
+        <attr name="right_iv_1" format="reference" />
+        <!-- 右边内侧文字 -->
+        <attr name="right_tv_2" format="string" />
+        <!-- 右边内侧图片 -->
+        <attr name="right_iv_2" format="reference" />
+        <!-- 左边内侧文本 -->
+        <attr name="left_tv_2" format="string" />
+        <!-- 左边内侧图片 -->
+        <attr name="left_iv_2" format="reference" />
+        <!-- 左边外侧图片 -->
+        <attr name="left_tv_1" format="string" />
+        <!-- 左边外侧文字 -->
+        <attr name="left_iv_1" format="reference" />
+        <!-- 标题 -->
+        <attr name="conter_tv" format="string" />
+        <!-- 文字颜色 -->
+        <attr name="c_textColor" format="reference|color" />
+        <!-- 背景色 -->
+        <!-- <attr name="c_background" format="reference|color" /> -->
+        <!-- 高度 -->
+        <!-- <attr name="c_hight" format="dimension" /> -->
+    </declare-styleable>
+
+    <dimen name="titlebar_def_hight">35dp</dimen>
+
+</resources>
