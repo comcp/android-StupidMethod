@@ -3,13 +3,14 @@ package com.stupid.method.adapter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-
-import com.stupid.method.util.XLog;
+import java.util.List;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.stupid.method.util.XLog;
 
 /**
  * 使用反射做adapter<br>
@@ -30,13 +31,13 @@ public class XAdapter2<T> extends XAdapter<T> implements ISuperAdapter<T> {
 
 	private OnLongClickItemListener longClickItemListener;
 
-	public XAdapter2(Context context, ArrayList<T> mData,
-			Class<? extends XViewHolder<T>> B) {
+	public XAdapter2(Context context, List<T> mData,
+			Class<? extends XViewHolder<T>> xViewHolder) {
 		super(context, mData, null);
 		super.setAdapterInterface(this);
 
 		try {
-			this.ViewBean = (Class<T>) Class.forName(B.getName());
+			this.ViewBean = (Class<T>) Class.forName(xViewHolder.getName());
 			mConstructor = ViewBean.getConstructor(LayoutInflater.class);
 		} catch (ClassNotFoundException e) {
 
@@ -52,7 +53,7 @@ public class XAdapter2<T> extends XAdapter<T> implements ISuperAdapter<T> {
 	@SuppressWarnings("unchecked")
 	@Override
 	public View convertView(int position, View convertView, ViewGroup parent,
-			ArrayList<T> mData, LayoutInflater inflater) {
+			List<T> mData, LayoutInflater inflater) {
 		XViewHolder<T> view = null;
 
 		if (convertView == null) {

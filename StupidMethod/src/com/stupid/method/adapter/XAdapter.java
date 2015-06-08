@@ -1,6 +1,7 @@
 package com.stupid.method.adapter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,12 +11,12 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 public abstract class XAdapter<T> extends BaseAdapter {
-	private ArrayList<T> mData;
+	private List<T> mData;
 	private ISuperAdapter<T> adapterInterface;
 	private LayoutInflater inflater;
 	private Context context;
 
-	public XAdapter(Context context, ArrayList<T> mData,
+	public XAdapter(Context context, List<T> mData,
 			ISuperAdapter<T> adapterInterface) {
 		this.mData = mData;
 		this.adapterInterface = adapterInterface;
@@ -24,7 +25,7 @@ public abstract class XAdapter<T> extends BaseAdapter {
 
 	}
 
-	public ArrayList<T> getmData() {
+	public List<T> getmData() {
 		return mData;
 	}
 
@@ -73,6 +74,11 @@ public abstract class XAdapter<T> extends BaseAdapter {
 
 		this.notifyDataSetChanged();
 
+	}
+
+	public void add(T t) {
+		if (mData != null)
+			mData.add(t);
 	}
 
 	/***
