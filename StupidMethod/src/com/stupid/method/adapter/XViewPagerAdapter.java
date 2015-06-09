@@ -8,10 +8,12 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.stupid.method.app.XActivity;
 import com.stupid.method.app.XFragment;
+import com.stupid.method.util.ListUtils;
 
 public class XViewPagerAdapter extends FragmentPagerAdapter {
 
 	List<FragmentParam> mFragments;
+	private boolean isInfiniteLoop = true;
 
 	public XViewPagerAdapter(XActivity activity,
 			List<Class<? extends XFragment>> fragments) {
@@ -34,15 +36,14 @@ public class XViewPagerAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public Fragment getItem(int position) {
+		FragmentParam param = mFragments.get(getPosition(position));
 		try {
 
-			if (mFragments.get(position).fragment == null) {
-				mFragments.get(position).fragment = (XFragment) mFragments
-						.get(position).xFragment.newInstance();
+			if (param.fragment == null) {
+				param.fragment = (XFragment) param.xFragment.newInstance();
 			}
-			mFragments.get(position).fragment
-					.setData(mFragments.get(position).data);
-			return mFragments.get(position).fragment;
+			param.fragment.setData(param.data);
+			return param.fragment;
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -61,5 +62,22 @@ public class XViewPagerAdapter extends FragmentPagerAdapter {
 		public Class<? extends XFragment> xFragment;
 		public Object data;
 
+	}
+
+	public XViewPagerAdapter setInfiniteLoop(boolean isInfiniteLoop) {
+		this.isInfiniteLoop = isInfiniteLoop;
+		return this;
+	}
+
+	/**
+	 * get really position
+	 * 
+	 * @param position
+	 * @return
+	 */
+	private int getPosition(int position) {
+
+		return isInfiniteLoop ? position % ListUtils.getSize(mFragments)
+				: position;
 	}
 }
