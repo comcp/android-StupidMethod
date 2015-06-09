@@ -22,7 +22,7 @@ public class XViewPagerAdapter extends FragmentPagerAdapter {
 		FragmentParam param = null;
 		for (Class<? extends XFragment> class1 : fragments) {
 			param = new FragmentParam();
-			param.xFragment = class1;
+			param.cls = class1;
 			mFragments.add(param);
 		}
 
@@ -40,7 +40,7 @@ public class XViewPagerAdapter extends FragmentPagerAdapter {
 		try {
 
 			if (param.fragment == null) {
-				param.fragment = (XFragment) param.xFragment.newInstance();
+				param.fragment = (XFragment) param.cls.newInstance();
 			}
 			param.fragment.setData(param.data);
 			return param.fragment;
@@ -59,7 +59,7 @@ public class XViewPagerAdapter extends FragmentPagerAdapter {
 
 	public static class FragmentParam {
 		private XFragment fragment;
-		public Class<? extends XFragment> xFragment;
+		public Class<? extends XFragment> cls;
 		public Object data;
 
 	}
