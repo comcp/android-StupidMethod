@@ -55,7 +55,9 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 	 * 
 	 * **/
 	public AQuery ajax(int CallBack_id, String url, MapUtil<String, ?> params) {
-		return getAQuery().ajax(url, params.getHashMap(), String.class,
+
+		return getAQuery().ajax(url,
+				params == null ?null: params.getHashMap(), String.class,
 				new AQCallbackString(CallBack_id, this));
 
 	}
