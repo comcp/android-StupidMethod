@@ -10,15 +10,15 @@ import com.stupid.method.app.XActivity;
 import com.stupid.method.app.XFragment;
 import com.stupid.method.util.ListUtils;
 
-public class XViewPagerAdapter extends FragmentPagerAdapter {
+public class XFragmentViewPagerAdapter extends FragmentPagerAdapter {
 
 	List<FragmentParam> mFragments;
 	private boolean isInfiniteLoop = true;
 
-	public XViewPagerAdapter(XActivity activity,
+	public XFragmentViewPagerAdapter(XActivity activity,
 			List<Class<? extends XFragment>> fragments) {
 		super(activity.getSupportFragmentManager());
-		mFragments = new ArrayList<XViewPagerAdapter.FragmentParam>();
+		mFragments = new ArrayList<XFragmentViewPagerAdapter.FragmentParam>();
 		FragmentParam param = null;
 		for (Class<? extends XFragment> class1 : fragments) {
 			param = new FragmentParam();
@@ -28,7 +28,7 @@ public class XViewPagerAdapter extends FragmentPagerAdapter {
 
 	}
 
-	public XViewPagerAdapter(XActivity activity, List<FragmentParam> fragments,
+	public XFragmentViewPagerAdapter(XActivity activity, List<FragmentParam> fragments,
 			int i) {
 		super(activity.getSupportFragmentManager());
 		mFragments = fragments;
@@ -64,7 +64,7 @@ public class XViewPagerAdapter extends FragmentPagerAdapter {
 
 	}
 
-	public XViewPagerAdapter setInfiniteLoop(boolean isInfiniteLoop) {
+	public XFragmentViewPagerAdapter setInfiniteLoop(boolean isInfiniteLoop) {
 		this.isInfiniteLoop = isInfiniteLoop;
 		return this;
 	}
