@@ -1,6 +1,5 @@
 package com.stupid.method.adapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
@@ -33,7 +32,7 @@ public abstract class XAdapter<T> extends BaseAdapter {
 		return adapterInterface;
 	}
 
-	public void setmData(ArrayList<T> mData) {
+	public void setmData(List<T> mData) {
 		this.mData = mData;
 		this.notifyDataSetChanged();
 	}
@@ -64,12 +63,13 @@ public abstract class XAdapter<T> extends BaseAdapter {
 	 * 更新整个列表 <br>
 	 * 先删除列表内数据,再更新
 	 * */
-	public void upData(ArrayList<T> mData) {
+	public void upData(List<T> mData) {
 		if (mData == null) {
 			this.mData = mData;
 		} else {
 			this.mData.clear();
-			this.mData.addAll((ArrayList<T>) mData.clone());
+			this.mData.addAll(mData);
+
 		}
 
 		this.notifyDataSetChanged();
@@ -84,7 +84,7 @@ public abstract class XAdapter<T> extends BaseAdapter {
 	/***
 	 * 向列表尾部添加数据
 	 * */
-	public void addAll(ArrayList<T> mData) {
+	public void addAll(List<T> mData) {
 
 		if (mData != null)
 			this.mData.addAll(mData);
