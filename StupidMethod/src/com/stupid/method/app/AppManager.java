@@ -7,11 +7,14 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.http.conn.util.InetAddressUtils;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -36,6 +39,8 @@ public class AppManager extends Application {
 	private static AppManager instance;
 	private Point screenSize;
 	private int versionCode = -1;
+	private SharedPreferences sharedPreferences;
+	private ExecutorService mExecutor = Executors.newFixedThreadPool(5);
 
 	private static DaoMaster daoMaster;
 	private static DaoSession daoSession;
@@ -235,4 +240,51 @@ public class AppManager extends Application {
 		}
 		return "";
 	}
+
+	public void execute(Runnable command) {
+		mExecutor.execute(command);
+	}
+
+	public AppManager setXmlBoolean(String key, boolean value) {
+		getSharedPreferences().edit().putBoolean(key, value);
+		return this;
+	}
+
+	public boolean getXmlBoolean(String key, boolean defValue) {
+		return getSharedPreferences().getBoolean(key, defValue);
+	}
+
+	public int getXmlInt(String key, int defValue) {
+		return getSharedPreferences().getInt(key, defValue);
+	}
+
+	public AppManager setXmlInt(String key, int value) {
+
+		getSharedPreferences().edit().putInt(key, value);
+		return this;
+
+	}
+
+	public AppManager setXmlString(String key, String value) {
+
+		getSharedPreferences().edit().putString(key, value).commit();
+		return this;
+	}
+
+	public String getXmlString(String key, String defValue) {
+
+		return getSharedPreferences().getString(key, defValue);
+	}
+
+	public SharedPreferences getSharedPreferences() {
+		if (sharedPreferences == null)
+			sharedPreferences = getSharedPreferences("appData",
+					Context.MODE_PRIVATE);
+		return sharedPreferences;
+	}
+
+	public void setSharedPreferences(SharedPreferences sharedPreferences) {
+		this.sharedPreferences = sharedPreferences;
+	}
+
 }
