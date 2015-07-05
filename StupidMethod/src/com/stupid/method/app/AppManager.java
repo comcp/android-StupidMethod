@@ -25,6 +25,8 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.WindowManager;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.parser.Feature;
 import com.androidquery.callback.BitmapAjaxCallback;
 import com.stupid.method.db.bean.TmpData;
 import com.stupid.method.db.dao.DaoMaster;
@@ -245,35 +247,63 @@ public class AppManager extends Application {
 		mExecutor.execute(command);
 	}
 
-	public AppManager setXmlBoolean(String key, boolean value) {
-		getSharedPreferences().edit().putBoolean(key, value);
+	private String getKey(Object key) {
+
+		return key == null ? "" : key instanceof String ? key.toString() : key
+				.getClass().getSimpleName();
+	}
+
+	public AppManager setXmlBoolean(Object key, boolean value) {
+		getSharedPreferences().edit().putBoolean(getKey(key), value);
 		return this;
 	}
 
-	public boolean getXmlBoolean(String key, boolean defValue) {
-		return getSharedPreferences().getBoolean(key, defValue);
+	public boolean getXmlBoolean(Object key, boolean defValue) {
+		return getSharedPreferences().getBoolean(getKey(key), defValue);
 	}
 
-	public int getXmlInt(String key, int defValue) {
-		return getSharedPreferences().getInt(key, defValue);
+	public int getXmlInt(Object key, int defValue) {
+		return getSharedPreferences().getInt(getKey(key), defValue);
 	}
 
-	public AppManager setXmlInt(String key, int value) {
+	public AppManager setXmlInt(Object key, int value) {
 
-		getSharedPreferences().edit().putInt(key, value);
+		getSharedPreferences().edit().putInt(getKey(key), value);
 		return this;
 
 	}
 
-	public AppManager setXmlString(String key, String value) {
+	public AppManager setXmlJSON(Object key, Object value) {
 
-		getSharedPreferences().edit().putString(key, value).commit();
+		getSharedPreferences()
+				.edit()
+				.putString(
+						getKey(key),
+						value instanceof String ? value.toString() : JSON
+								.toJSONString(value)).commit();
 		return this;
 	}
 
-	public String getXmlString(String key, String defValue) {
+	public <T> T getXmlJSON(Object key, Class<T> clazz) {
 
-		return getSharedPreferences().getString(key, defValue);
+		return JSON.parseObject(
+				getSharedPreferences().getString(getKey(key), "{}"), clazz);
+	}
+
+	public AppManager setXmlString(Object key, String value) {
+
+		getSharedPreferences().edit().putString(getKey(key), value).commit();
+		return this;
+	}
+
+	public String getXmlString(Object key) {
+
+		return this.getXmlString(key, "");
+	}
+
+	public String getXmlString(Object key, String defValue) {
+
+		return getSharedPreferences().getString(getKey(key), defValue);
 	}
 
 	public SharedPreferences getSharedPreferences() {
