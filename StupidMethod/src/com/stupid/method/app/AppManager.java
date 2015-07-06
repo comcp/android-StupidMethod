@@ -249,8 +249,17 @@ public class AppManager extends Application {
 
 	private String getKey(Object key) {
 
-		return key == null ? "" : key instanceof String ? key.toString() : key
-				.getClass().getSimpleName();
+		if (key == null) {
+			return "";
+		} else if (key instanceof String || key instanceof StringBuilder
+				|| key instanceof StringBuffer) {
+
+			return key.toString();
+		} else if (key instanceof Class) {
+			return ((Class) key).getSimpleName();
+		} else
+
+			return key.getClass().getSimpleName();
 	}
 
 	public AppManager setXmlBoolean(Object key, boolean value) {
@@ -284,10 +293,19 @@ public class AppManager extends Application {
 		return this;
 	}
 
-	public <T> T getXmlJSON(Object key, Class<T> clazz) {
+	public <T> T getXmlJSON(Class<T> clazz) {
+		return getXmlJSON(clazz, clazz);
 
-		return JSON.parseObject(
-				getSharedPreferences().getString(getKey(key), "{}"), clazz);
+	}
+
+	public <T> T getXmlJSON(Object key, Class<T> clazz) {
+		try {
+			return JSON.parseObject(
+					getSharedPreferences().getString(getKey(key), ""), clazz);
+		} catch (Exception e) {
+			return null;
+		}
+
 	}
 
 	public AppManager setXmlString(Object key, String value) {
