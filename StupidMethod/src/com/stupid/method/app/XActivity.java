@@ -57,7 +57,7 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 	public AQuery ajax(int CallBack_id, String url, MapUtil<String, ?> params) {
 
 		return getAQuery().ajax(url,
-				params == null ?null: params.getHashMap(), String.class,
+				params == null ? null : params.getHashMap(), String.class,
 				new AQCallbackString(CallBack_id, this));
 
 	}
@@ -68,6 +68,17 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 
 	public void showToast(String text) {
 		showToast(text, Toast.LENGTH_SHORT);
+	}
+
+	@Override
+	public void showToast(int text) {
+		showToast(getResources().getString(text));
+	}
+
+	@Override
+	public void showToast(int text, int duration) {
+		showToast(getResources().getString(text), duration);
+
 	}
 
 	/**

@@ -1,6 +1,7 @@
 package com.stupid.method.adapter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import android.support.v4.app.Fragment;
@@ -26,6 +27,11 @@ public class XFragmentPagerAdapter extends FragmentPagerAdapter {
 			mFragments.add(param);
 		}
 
+	}
+
+	public XFragmentPagerAdapter(XActivity activity,
+			Class<? extends XFragment>... xfClasses) {
+		this(activity, Arrays.asList(xfClasses));
 	}
 
 	public XFragmentPagerAdapter(XActivity activity,

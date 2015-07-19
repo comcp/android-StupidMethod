@@ -95,4 +95,16 @@ abstract public class XFragment extends Fragment implements IXFragment {
 		getContent().showToast(text);
 	}
 
+	@Override
+	public void showToast(int text) {
+		getContent().showToast(text);
+
+	}
+
+	@Override
+	public void showToast(int text, int duration) {
+		getContent().showToast(text, duration);
+
+	}
+
 }

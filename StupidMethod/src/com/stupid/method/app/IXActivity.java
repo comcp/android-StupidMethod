@@ -14,7 +14,11 @@ public interface IXActivity extends AQCallbackListener {
 
 	void showToast(String text, int duration);
 
+	void showToast(int text, int duration);
+
 	void showToast(String text);
+
+	void showToast(int text);
 
 	XActivity getContent();
 
