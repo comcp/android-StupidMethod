@@ -2,7 +2,7 @@ package com.stupid.method.app;
 
 import android.view.View;
 
-abstract public class XFragView implements IFragView {
+abstract public class XFragView implements IXFragView {
 	XFragment mFragment;
 	View mRoot;
 

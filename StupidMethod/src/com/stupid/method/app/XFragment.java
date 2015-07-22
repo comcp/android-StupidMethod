@@ -107,4 +107,19 @@ abstract public class XFragment extends Fragment implements IXFragment {
 
 	}
 
+	@Override
+	public void waitof() {
+		if (getContent() != null) {
+			getContent().waitof();
+		}
+
+	}
+
+	@Override
+	public void waitof(String msg) {
+		if (getContent() != null) {
+			getContent().waitof(msg);
+		}
+	}
+
 }

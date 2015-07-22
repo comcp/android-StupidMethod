@@ -10,6 +10,7 @@ import com.stupid.method.util.MapUtil;
  * 
  * ***/
 public interface IXActivity extends AQCallbackListener {
+	
 	AQuery ajax(int CallBack_id, String url, MapUtil<String, ?> params);
 
 	void showToast(String text, int duration);
@@ -20,11 +21,18 @@ public interface IXActivity extends AQCallbackListener {
 
 	void showToast(int text);
 
+	/**
+	 * 获得content
+	 * **/
 	XActivity getContent();
 
 	AQuery getAQuery();
 
 	/** 获得容器id **/
 	int getLayoutId();
+
+	void waitof(String msg);
+
+	void waitof();
 
 }

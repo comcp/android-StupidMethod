@@ -4,6 +4,8 @@ import java.util.List;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -158,5 +160,14 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		getWindow().addFlags(
 				WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+	}
+
+	@Override
+	public void waitof() {
+
+	}
+
+	@Override
+	public void waitof(String msg) {
 	}
 }

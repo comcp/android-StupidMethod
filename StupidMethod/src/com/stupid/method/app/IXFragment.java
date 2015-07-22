@@ -14,6 +14,4 @@ public interface IXFragment extends IXActivity {
 
 	View findViewById(int id);
 
-	void onLeave();
-
 }

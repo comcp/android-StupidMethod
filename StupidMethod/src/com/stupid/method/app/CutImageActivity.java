@@ -8,4 +8,6 @@ public class CutImageActivity extends XActivity {
 		return 0;
 	}
 
+	
+
 }
