@@ -1,8 +1,8 @@
 package com.stupid.method.adapter;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -21,10 +21,10 @@ public class ExpandAdapter extends BaseExpandableListAdapter {
 
 	private Constructor<?> childConstructor;
 
-	public ExpandAdapter(Context context, ArrayList<ParentNode> groups,
+	public ExpandAdapter(Context context, List<ParentNode> groups,
 			Class<? extends XViewHolder<? extends ParentNode>> parClass,
 			Class<? extends XViewHolder<? extends ChildNode>> childClass) {
-		this.groups = groups;
+		this.groups.addAll(groups);
 		this.context = context;
 		this.inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

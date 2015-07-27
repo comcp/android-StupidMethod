@@ -2,9 +2,9 @@ package com.stupid.method.adapter;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 /***
@@ -42,13 +42,13 @@ public class ParentNode<P extends Object, C extends Object> implements
 	//
 	// }
 
-	public ParentNode(String name, ArrayList<ChildNode<C>> nodes) {
+	public ParentNode(String name, List<ChildNode<C>> nodes) {
 
 		this(name, null, nodes);
 
 	}
 
-	public ParentNode(String name, P t, ArrayList<ChildNode<C>> nodes) {
+	public ParentNode(String name, P t, List<ChildNode<C>> nodes) {
 
 		this.name = name;
 		this.nodes.addAll(nodes);
