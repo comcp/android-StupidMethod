@@ -2,11 +2,12 @@ package com.stupid.method.app;
 
 import java.util.List;
 
+import android.R;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -15,6 +16,8 @@ import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
+import com.stupid.method.BuildConfig;
+import com.stupid.method.adapter.XFragmentPagerAdapter.FragmentParam;
 import com.stupid.method.androidquery.expansion.AQCallbackString;
 import com.stupid.method.db.bean.TmpData;
 import com.stupid.method.util.MapUtil;
@@ -27,9 +30,10 @@ import com.stupid.method.util.XLog;
  * ***/
 abstract public class XActivity extends FragmentActivity implements IXActivity {
 	private static String tag = "XActivity";
-	private static boolean DEBUG = false;
+	private static boolean DEBUG = BuildConfig.DEBUG;
 	private static long DOUBLE_CLICK_MENU = -1;
 	private AQuery $;
+	private XFragment mCurrentFragment;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -169,5 +173,95 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 
 	@Override
 	public void waitof(String msg) {
+	}
+
+	protected String getFragmentTag(FragmentParam param) {
+		StringBuilder sb;
+		if (param.getFragmentTag() == null) {
+
+			if (param.cls != null)
+				sb = new StringBuilder(param.cls.toString());
+			else
+				sb = new StringBuilder(param.fragment.toString());
+			param.setFragmentTag(sb.toString());
+		} else {
+			sb = new StringBuilder(param.getFragmentTag());
+		}
+		return sb.toString();
+	}
+
+	public void pushFragmentToBackStack(Class<?> cls, Object data) {
+
+		pushFragment(cls, data, true);
+	}
+
+	public void pushFragment(Class<?> cls, Object data, boolean isBack) {
+		FragmentParam param = new FragmentParam();
+		param.cls = cls;
+		param.data = data;
+		param.isBack = isBack;
+		addFragmentToLayout(getLayoutId(), param);
+	}
+
+	public void addFragment(FragmentParam param) {
+		addFragmentToLayout(getLayoutId(), param);
+	}
+
+	private void addFragmentToLayout(int layoutId, FragmentParam param) {
+		Class<?> cls = param.cls;
+		if (param.isEmpty()) {
+			XLog.d(tag, "param 为空.");
+			return;
+		}
+		try {
+			String fragmentTag = getFragmentTag(param);
+			FragmentManager fm = getSupportFragmentManager();
+
+			XFragment fragment = (XFragment) fm.findFragmentByTag(fragmentTag);
+
+			if (fragment == null) {
+				if (DEBUG)
+					XLog.d(tag, "Fragment 没有生成");
+				if (param.fragment == null)
+					fragment = (XFragment) cls.newInstance();
+				else
+					fragment = param.fragment;
+
+			}
+			FragmentTransaction ft = fm.beginTransaction();
+			XFragment oldFragment = mCurrentFragment;
+			if (oldFragment != null && oldFragment != fragment) {
+
+			} else {
+				XLog.d(tag, "fragment 相等或者 oldFragment为空");
+
+			}
+
+			fragment.setData(param.data);
+
+			if (fragment.isAdded()) {
+				if (DEBUG) {
+					XLog.d(tag, String.format("%s 已存在,调用显示", fragmentTag));
+				}
+				ft.show(fragment);
+
+			} else {
+				if (DEBUG) {
+					XLog.d(tag, String.format("添加一个<%s> 到视图里", fragmentTag));
+				}
+				ft.add(layoutId, fragment, fragmentTag);
+
+			}
+
+			mCurrentFragment = fragment;
+			if (param.isBack)
+				ft.addToBackStack(fragmentTag);
+			ft.commitAllowingStateLoss();
+
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
 	}
 }

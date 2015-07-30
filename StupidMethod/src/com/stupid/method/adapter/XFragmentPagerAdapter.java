@@ -64,9 +64,25 @@ public class XFragmentPagerAdapter extends FragmentPagerAdapter {
 	}
 
 	public static class FragmentParam {
-		private XFragment fragment;
-		public Class<? extends XFragment> cls;
+		public XFragment fragment;
+		public Class<?> cls;
 		public Object data;
+
+		public boolean isBack = false;
+		public String fragmentTag;
+
+		public boolean isEmpty() {
+
+			return cls == null && fragment == null;
+		}
+
+		public void setFragmentTag(String fragmentTag) {
+			this.fragmentTag = fragmentTag;
+		}
+
+		public String getFragmentTag() {
+			return fragmentTag;
+		}
 
 	}
 
