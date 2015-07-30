@@ -190,9 +190,9 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 		return sb.toString();
 	}
 
-	public void pushFragmentToBackStack(Class<?> cls, Object data) {
+	public FragmentParam pushFragmentToBackStack(Class<?> cls, Object data) {
 
-		pushFragment(cls, data, true);
+		return pushFragment(cls, data, true);
 	}
 
 	/**
@@ -204,24 +204,28 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 	 * @param data
 	 * @param isBack
 	 *            按返回键是否销毁
+	 * @return
 	 * **/
-	public void pushFragment(Class<?> cls, Object data, boolean isBack) {
+	public FragmentParam pushFragment(Class<?> cls, Object data, boolean isBack) {
 		FragmentParam param = new FragmentParam();
 		param.cls = cls;
 		param.data = data;
 		param.isBack = isBack;
-		addFragmentToLayout(getLayoutId(), param);
+		return addFragmentToLayout(getLayoutId(), param);
 	}
 
-	public void addFragment(FragmentParam param) {
-		addFragmentToLayout(getLayoutId(), param);
+	/***
+	 * 添加到Fragment堆栈里
+	 **/
+	public FragmentParam addFragment(FragmentParam param) {
+		return addFragmentToLayout(getLayoutId(), param);
 	}
 
-	private void addFragmentToLayout(int layoutId, FragmentParam param) {
+	private FragmentParam addFragmentToLayout(int layoutId, FragmentParam param) {
 		Class<?> cls = param.cls;
 		if (param.isEmpty()) {
 			XLog.d(tag, "param 为空.");
-			return;
+			return null;
 		}
 		try {
 			String fragmentTag = getFragmentTag(param);
@@ -232,9 +236,10 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 			if (fragment == null) {
 				if (DEBUG)
 					XLog.d(tag, "Fragment 没有生成");
-				if (param.fragment == null)
+				if (param.fragment == null) {
 					fragment = (XFragment) cls.newInstance();
-				else
+					param.fragment = fragment;
+				} else
 					fragment = param.fragment;
 
 			}
@@ -273,5 +278,6 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
+		return param;
 	}
 }

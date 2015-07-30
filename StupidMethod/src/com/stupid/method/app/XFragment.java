@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
+import com.stupid.method.adapter.XFragmentPagerAdapter.FragmentParam;
 import com.stupid.method.androidquery.expansion.AQCallbackString;
 import com.stupid.method.util.MapUtil;
 import com.stupid.method.util.XLog;
@@ -83,6 +84,19 @@ abstract public class XFragment extends Fragment implements IXFragment {
 			XLog.d(TAG, url);
 
 		}
+	}
+
+	public FragmentParam pushFragmentToBackStack(Class<?> cls, Object data) {
+		return getContent().pushFragment(cls, data, true);
+	}
+
+	public FragmentParam pushFragment(Class<?> cls, Object data, boolean isBack) {
+
+		return getContent().pushFragment(cls, data, isBack);
+	}
+
+	public FragmentParam addFragment(FragmentParam param) {
+		return getContent().addFragment(param);
 	}
 
 	@Override
