@@ -2,8 +2,8 @@ package com.stupid.method.app;
 
 import java.util.List;
 
-import android.R;
 import android.content.Context;
+import android.drm.DrmUtils.ExtendedMetadataParser;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -195,6 +195,16 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 		pushFragment(cls, data, true);
 	}
 
+	/**
+	 * 
+	 * 添加fragment
+	 * 
+	 * @param cls
+	 *            {@link XFragment};
+	 * @param data
+	 * @param isBack
+	 *            按返回键是否销毁
+	 * **/
 	public void pushFragment(Class<?> cls, Object data, boolean isBack) {
 		FragmentParam param = new FragmentParam();
 		param.cls = cls;
