@@ -7,6 +7,8 @@ import com.stupid.method.util.MapUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +33,23 @@ abstract public class XDialogFragment extends DialogFragment implements
 
 		}
 		return mRootView;
+	}
+	
+	public void show(XActivity xActivity, boolean cancel) {
+		setCancelable(cancel);
+		setStyle(DialogFragment.STYLE_NO_TITLE, 0);
+
+		show(xActivity.getSupportFragmentManager(), this.getClass().getName());
+	}
+
+	@Override
+	public void show(FragmentManager manager, String tag) {
+		super.show(manager, tag);
+	}
+
+	@Override
+	public int show(FragmentTransaction transaction, String tag) {
+		return super.show(transaction, tag);
 	}
 
 	@Override

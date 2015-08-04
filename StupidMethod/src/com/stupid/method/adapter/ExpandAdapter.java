@@ -97,14 +97,11 @@ public class ExpandAdapter extends BaseExpandableListAdapter {
 		XViewHolder<ParentNode> view = null;
 
 		if (convertView == null) {
-			// 在这里写 反射
-			if (parentConstructor == null) {
-				System.err.println("类没有被实例化");
-			}
 
 			try {
-				view = (XViewHolder<ParentNode>) parentConstructor
-						.newInstance(inflater);
+				if (parentConstructor != null)
+					view = (XViewHolder<ParentNode>) parentConstructor
+							.newInstance(inflater);
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -127,13 +124,11 @@ public class ExpandAdapter extends BaseExpandableListAdapter {
 
 		if (convertView == null) {
 			// 在这里写 反射
-			if (childConstructor == null) {
-				System.err.println("类没有被实例化");
-			}
 
 			try {
-				view = (XViewHolder<ChildNode>) childConstructor
-						.newInstance(inflater);
+				if (childConstructor != null)
+					view = (XViewHolder<ChildNode>) childConstructor
+							.newInstance(inflater);
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -149,5 +144,4 @@ public class ExpandAdapter extends BaseExpandableListAdapter {
 
 		return view.getView(node, groupPosition);
 	}
-
 }

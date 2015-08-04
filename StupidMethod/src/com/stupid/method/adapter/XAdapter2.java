@@ -58,16 +58,15 @@ public class XAdapter2<T> extends XAdapter<T> implements ISuperAdapter<T> {
 
 		if (convertView == null) {
 			// 在这里写 反射
-			if (mConstructor == null) {
-				XLog.e(tag, "类没有被实例化");
-			}
 
 			try {
-				view = (XViewHolder<T>) mConstructor.newInstance(inflater);
-				if (clickItemListener != null)
-					view.setOnClickItemListener(this.clickItemListener);
-				if (longClickItemListener != null)
-					view.setOnLongClickItemListener(longClickItemListener);
+				if (mConstructor != null) {
+					view = (XViewHolder<T>) mConstructor.newInstance(inflater);
+					if (clickItemListener != null)
+						view.setOnClickItemListener(this.clickItemListener);
+					if (longClickItemListener != null)
+						view.setOnLongClickItemListener(longClickItemListener);
+				}
 			} catch (InstantiationException e) {
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {
