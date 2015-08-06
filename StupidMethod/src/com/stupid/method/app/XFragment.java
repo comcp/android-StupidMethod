@@ -130,6 +130,14 @@ abstract public class XFragment extends Fragment implements IXFragment {
 	}
 
 	@Override
+	public void waitof(String msg, boolean cancel) {
+
+		if (getContent() != null) {
+			getContent().waitof(msg, cancel);
+		}
+	}
+
+	@Override
 	public void waitof(String msg) {
 		if (getContent() != null) {
 			getContent().waitof(msg);
