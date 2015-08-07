@@ -17,6 +17,7 @@ abstract public class XDialogFragment extends DialogFragment implements
 		IXFragment {
 
 	private View mRootView;
+
 	protected Object data;
 
 	@Override
@@ -29,8 +30,10 @@ abstract public class XDialogFragment extends DialogFragment implements
 				parent = null;
 			}
 		} else {
+
 			mRootView = inflater.inflate(getLayoutId(), container);
 
+			
 		}
 		initPager(savedInstanceState, data);
 		return mRootView;
@@ -39,18 +42,12 @@ abstract public class XDialogFragment extends DialogFragment implements
 	public void show(XActivity xActivity, boolean cancel) {
 		setCancelable(cancel);
 		setStyle(DialogFragment.STYLE_NO_TITLE, 0);
-
+		// onAttach(xActivity);
 		show(xActivity.getSupportFragmentManager(), this.getClass().getName());
 	}
 
-	@Override
-	public void show(FragmentManager manager, String tag) {
-		super.show(manager, tag);
-	}
-
-	@Override
-	public int show(FragmentTransaction transaction, String tag) {
-		return super.show(transaction, tag);
+	public boolean isShowing() {
+		return getDialog() == null ? false : getDialog().isShowing();
 	}
 
 	@Override
@@ -109,5 +106,10 @@ abstract public class XDialogFragment extends DialogFragment implements
 	final public View findViewById(int id) {
 
 		return mRootView.findViewById(id);
+	}
+
+	@Override
+	public void waitof(String msg, boolean cancel) {
+
 	}
 }

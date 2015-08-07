@@ -3,7 +3,6 @@ package com.stupid.method.app;
 import java.util.List;
 
 import android.content.Context;
-import android.drm.DrmUtils.ExtendedMetadataParser;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -19,6 +18,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.stupid.method.BuildConfig;
 import com.stupid.method.adapter.XFragmentPagerAdapter.FragmentParam;
 import com.stupid.method.androidquery.expansion.AQCallbackString;
+import com.stupid.method.app.imp.WaitDialog;
 import com.stupid.method.db.bean.TmpData;
 import com.stupid.method.util.MapUtil;
 import com.stupid.method.util.XLog;
@@ -166,15 +166,6 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 				WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 	}
 
-	@Override
-	public void waitof() {
-
-	}
-
-	@Override
-	public void waitof(String msg) {
-	}
-
 	protected String getFragmentTag(FragmentParam param) {
 		StringBuilder sb;
 		if (param.getFragmentTag() == null) {
@@ -279,5 +270,59 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 			e.printStackTrace();
 		}
 		return param;
+	}
+
+	protected XDialogFragment xdialog;
+	public Class<? extends XDialogFragment> dialogClz = WaitDialog.class;
+
+	@Override
+	public void waitof(String msg) {
+		waitof(msg, true);
+
+	}
+
+	@Override
+	public void waitof(String msg, boolean cancel) {
+
+		if (xdialog == null)
+			try {
+				if (dialogClz != null)
+					xdialog = dialogClz.newInstance();
+				else {
+					XLog.e(tag, "未设置xdialog Class");
+					return;
+				}
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		xdialog.setData(msg);
+
+		if (xdialog.getDialog() == null)
+			xdialog.show(this, false);
+		else {
+			if (xdialog.isShowing())
+				xdialog.dismiss();
+
+			xdialog.show(this, cancel);
+
+		}
+	}
+
+	@Override
+	public void finish() {
+		if (xdialog != null && xdialog.isShowing())
+			xdialog.dismiss();
+		super.finish();
+	}
+
+	@Override
+	public void waitof() {
+		waitof(null);
+
 	}
 }
