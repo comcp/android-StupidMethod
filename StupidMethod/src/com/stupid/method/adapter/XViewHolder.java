@@ -1,62 +1,67 @@
 package com.stupid.method.adapter;
 
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 
 /**
+ * @说明： 执行顺序 {@link XViewHolder#getLayoutId()}
+ *      {@link XViewHolder#onCreat(XAdapter, android.content.Context)}
+ *      {@link XViewHolder#onDestory(int)}
+ *      {@link XViewHolder#onResetView(Object, int)}
  * 
- * 说明：
+ * @警告 请不要手动调用 {@link IXViewHolder #getView(Object, int)}
  * 
- * @author comcp@126.com
  * 
- * @version
+ * @author comcp@126.com <br>
+ *         github: https://github.com/comcp/android-StupidMethod
+ * @version v1.6
  * 
  * @创建时间：2014-12-3上午11:21:31
  * 
  */
-
-public abstract class XViewHolder<T> implements OnClickListener,
+abstract public class XViewHolder<T> implements IXViewHolder, OnClickListener,
 		OnLongClickListener {
-	private View mRoot;
-	public LayoutInflater inflater;
+	protected View mRoot;
+	protected LayoutInflater inflater;
 	private OnClickItemListener itemListener;
 	private OnLongClickItemListener longClickItemListener;
-	public T mData;
-	public int position;
+	protected T mData;
+	private int position;
 
-	public XViewHolder(LayoutInflater inflater) {
-		this.inflater = inflater;
-		onCreat();
+	@Override
+	public abstract int getLayoutId();
+
+	@Override
+	public void setOnClickItemListener(OnClickItemListener itemListener) {
+		this.itemListener = itemListener;
+	}
+
+	@Override
+	public void setOnLongClickItemListener(
+			OnLongClickItemListener longClickItemListener) {
+		this.longClickItemListener = longClickItemListener;
 
 	}
 
-	abstract protected void onCreat();
-
-	public Drawable getDrawableById(int id) {
-		// 获取到资源id
-		if (null == mRoot)
-			return null;
-		Drawable drawable = mRoot.getResources().getDrawable(id);
-		drawable.setBounds(0, 0, drawable.getIntrinsicWidth(),
-				drawable.getIntrinsicHeight());
-		return drawable;
+	public View getView(Object data, int position) {
+		this.position = position;
+		mRoot.setTag(this);
+		onResetView((T) data, position);
+		return mRoot;
 	}
 
-	/*** 设置item 显示内容的标签 **/
-	protected void setContentView(int id) {
-		mRoot = inflater.inflate(id, null);
-
+	public View getView() {
+		return mRoot;
 	}
 
-	/** 重新初始化 view 显示数据 **/
-	@Deprecated
 	protected void setData(T data) {
 		mData = data;
 
 	}
+
+	public abstract void onResetView(T data, int position);
 
 	protected View findViewById(int id) {
 		if (mRoot != null)
@@ -65,20 +70,16 @@ public abstract class XViewHolder<T> implements OnClickListener,
 			return null;
 	}
 
-	protected abstract void setView(T data, int position);
+	@Override
+	public View setInflater(LayoutInflater inflater) {
 
-	public View getView(T t, int position) {
-		this.mData = t;
-		this.position = position;
-		setView(t, position);
-		mRoot.setTag(this);
+		mRoot = inflater.inflate(getLayoutId(), null);
 		return mRoot;
 	}
 
 	@Override
 	public void onClick(View v) {
 		if (itemListener != null) {
-
 			itemListener.onClickItem(v, position);
 		}
 
@@ -92,17 +93,10 @@ public abstract class XViewHolder<T> implements OnClickListener,
 			return false;
 	}
 
-	public void setOnLongClickItemListener(
-			OnLongClickItemListener longClickItemListener) {
-		this.longClickItemListener = longClickItemListener;
-	}
+	@Override
+	public void onDestory(int nextPosition) {
 
-	public void setOnClickItemListener(OnClickItemListener itemListener) {
-		this.itemListener = itemListener;
+		System.out.println(String.format("Now:%d  Next:%d  ", position,
+				nextPosition));
 	}
-
-	public View getViewRoot() {
-		return mRoot;
-	}
-
 }

@@ -31,10 +31,14 @@ public interface IXActivity extends AQCallbackListener {
 	/** 获得容器id **/
 	int getLayoutId();
 
-	void waitof(String msg, boolean cancel);
+	XDialogFragment waitof(String msg, boolean cancel, long timeout);
 
-	void waitof(String msg);
+	XDialogFragment waitof(String msg, long timeout);
 
-	void waitof();
+	XDialogFragment waitof(String msg);
+
+	XDialogFragment waitof();
+
+	void waitEnd();
 
 }

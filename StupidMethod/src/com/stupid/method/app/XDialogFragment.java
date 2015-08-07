@@ -1,24 +1,39 @@
 package com.stupid.method.app;
 
-import com.androidquery.AQuery;
-import com.androidquery.callback.AjaxStatus;
-import com.stupid.method.util.MapUtil;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+
+import com.androidquery.AQuery;
+import com.androidquery.callback.AjaxStatus;
+import com.stupid.method.util.MapUtil;
 
 abstract public class XDialogFragment extends DialogFragment implements
 		IXFragment {
 
+	private onDialogCallback dialogCallback;
 	private View mRootView;
-
+	private Timer timer = new Timer();
 	protected Object data;
+	TimerTask task = new TimerTask() {
+
+		@Override
+		public void run() {
+			if (isShowing()) {
+				if (null != dialogCallback)
+					dialogCallback.onTimeout();
+				dismiss();
+
+			}
+		}
+	};
 
 	@Override
 	public View onCreateView(LayoutInflater inflater,
@@ -33,17 +48,30 @@ abstract public class XDialogFragment extends DialogFragment implements
 
 			mRootView = inflater.inflate(getLayoutId(), container);
 
-			
 		}
 		initPager(savedInstanceState, data);
 		return mRootView;
 	}
 
-	public void show(XActivity xActivity, boolean cancel) {
+	@Override
+	public void dismiss() {
+		super.dismiss();
+		if (null != dialogCallback)
+			dialogCallback.onDismiss();
+		if (timer != null)
+			task.cancel();
+	}
+
+	public void show(XActivity xActivity, boolean cancel, long timeout) {
 		setCancelable(cancel);
 		setStyle(DialogFragment.STYLE_NO_TITLE, 0);
 		// onAttach(xActivity);
+
 		show(xActivity.getSupportFragmentManager(), this.getClass().getName());
+		if (timeout > 0) {
+			timer.schedule(task, timeout);
+		}
+
 	}
 
 	public boolean isShowing() {
@@ -90,11 +118,9 @@ abstract public class XDialogFragment extends DialogFragment implements
 	}
 
 	@Override
-	public void waitof(String msg) {
-	}
+	public void waitEnd() {
+		// TODO Auto-generated method stub
 
-	@Override
-	public void waitof() {
 	}
 
 	@Override
@@ -109,7 +135,51 @@ abstract public class XDialogFragment extends DialogFragment implements
 	}
 
 	@Override
-	public void waitof(String msg, boolean cancel) {
+	public int getLayoutId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public XDialogFragment waitof(String msg, long timeout) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public XDialogFragment waitof(String msg) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public XDialogFragment waitof() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	abstract public void initPager(Bundle savedInstanceState, Object data);
+
+	public interface onDialogCallback extends OnClickListener {
+		void onDismiss();
+
+		void onTimeout();
 
 	}
+
+	public onDialogCallback getDialogCallback() {
+		return dialogCallback;
+	}
+
+	public void setDialogCallback(onDialogCallback dialogCallback) {
+		this.dialogCallback = dialogCallback;
+	}
+
+	@Override
+	public XDialogFragment waitof(String msg, boolean cancel, long timeout) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

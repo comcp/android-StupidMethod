@@ -1,4 +1,4 @@
-package com.stupid.method.app.imp;
+package com.stupid.method.app.impl;
 
 import android.os.Bundle;
 import android.widget.TextView;
@@ -20,6 +20,11 @@ public class WaitDialog extends XDialogFragment {
 	@Override
 	public int getLayoutId() {
 		return R.layout.wait_dialog_fragment;
+	}
+
+	@Override
+	public XDialogFragment waitof(String msg, boolean cancel, long timeout) {
+		return null;
 	}
 
 }

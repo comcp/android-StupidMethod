@@ -18,7 +18,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.stupid.method.BuildConfig;
 import com.stupid.method.adapter.XFragmentPagerAdapter.FragmentParam;
 import com.stupid.method.androidquery.expansion.AQCallbackString;
-import com.stupid.method.app.imp.WaitDialog;
+import com.stupid.method.app.impl.WaitDialog;
 import com.stupid.method.db.bean.TmpData;
 import com.stupid.method.util.MapUtil;
 import com.stupid.method.util.XLog;
@@ -68,8 +68,18 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 
 	}
 
-	public void showToast(String text, int duration) {
-		Toast.makeText(this, text, duration).show();
+	public void showToast(final String text, final int duration) {
+
+		runOnUiThread(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO 暂时先这么写着;
+				Toast.makeText(getContent(), text, duration).show();
+
+			}
+		});
+
 	}
 
 	public void showToast(String text) {
@@ -276,13 +286,19 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 	public Class<? extends XDialogFragment> dialogClz = WaitDialog.class;
 
 	@Override
-	public void waitof(String msg) {
-		waitof(msg, true);
+	public XDialogFragment waitof(String msg) {
+		return waitof(msg, true, 0);
 
 	}
 
 	@Override
-	public void waitof(String msg, boolean cancel) {
+	public XDialogFragment waitof(String msg, long timeout) {
+
+		return waitof(msg, false, timeout);
+	}
+
+	@Override
+	public XDialogFragment waitof(String msg, boolean cancel, long timeout) {
 
 		if (xdialog == null)
 			try {
@@ -290,27 +306,30 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 					xdialog = dialogClz.newInstance();
 				else {
 					XLog.e(tag, "未设置xdialog Class");
-					return;
+					return null;
 				}
 			} catch (InstantiationException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
+		if (xdialog == null) {
+			XLog.e(tag, "xdialog未能成功创建");
+			return null;
+		}
 		xdialog.setData(msg);
 
 		if (xdialog.getDialog() == null)
-			xdialog.show(this, false);
+			xdialog.show(this, false, timeout);
 		else {
 			if (xdialog.isShowing())
 				xdialog.dismiss();
 
-			xdialog.show(this, cancel);
+			xdialog.show(this, cancel, timeout);
 
 		}
+		return xdialog;
 	}
 
 	@Override
@@ -321,8 +340,15 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 	}
 
 	@Override
-	public void waitof() {
-		waitof(null);
+	public XDialogFragment waitof() {
+		return waitof(null);
+
+	}
+
+	@Override
+	public void waitEnd() {
+		if (xdialog != null && xdialog.isShowing())
+			xdialog.dismiss();
 
 	}
 }

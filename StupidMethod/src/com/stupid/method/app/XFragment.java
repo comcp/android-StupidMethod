@@ -122,26 +122,44 @@ abstract public class XFragment extends Fragment implements IXFragment {
 	}
 
 	@Override
-	public void waitof() {
+	public XDialogFragment waitof() {
 		if (getContent() != null) {
-			getContent().waitof();
-		}
+			return getContent().waitof();
+		} else
+			return null;
 
 	}
 
 	@Override
-	public void waitof(String msg, boolean cancel) {
+	public XDialogFragment waitof(String msg, long timeout) {
 
 		if (getContent() != null) {
-			getContent().waitof(msg, cancel);
-		}
+			return getContent().waitof(msg, timeout);
+		} else
+			return null;
 	}
 
 	@Override
-	public void waitof(String msg) {
+	public XDialogFragment waitof(String msg) {
 		if (getContent() != null) {
-			getContent().waitof(msg);
-		}
+			return getContent().waitof(msg);
+		} else
+			return null;
+	}
+
+	@Override
+	public void waitEnd() {
+		if (getContent() != null)
+			getContent().waitEnd();
+
+	}
+
+	@Override
+	public XDialogFragment waitof(String msg, boolean cancel, long timeout) {
+		if (getContent() != null) {
+			return getContent().waitof(msg, cancel, timeout);
+		} else
+			return null;
 	}
 
 }

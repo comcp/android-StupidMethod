@@ -38,7 +38,7 @@ public class AppManager extends Application {
 	public static final String tag = "AppManager";
 	public static final String DB_NAME = "TmpData";
 
-	private static AppManager instance;
+	private static AppManager instance = null;
 	private Point screenSize;
 	private int versionCode = -1;
 	private SharedPreferences sharedPreferences;

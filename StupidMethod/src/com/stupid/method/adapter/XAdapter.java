@@ -1,5 +1,7 @@
 package com.stupid.method.adapter;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import android.content.Context;
@@ -9,15 +11,29 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+/**
+ * @说明：
+ * 
+ * 
+ * @author comcp@126.com
+ * 
+ * @version v1.3
+ * 
+ * @创建时间：2014-12-3上午11:21:31
+ * 
+ */
 public abstract class XAdapter<T> extends BaseAdapter {
-	private List<T> mData;
-	private ISuperAdapter<T> adapterInterface;
-	private LayoutInflater inflater;
-	private Context context;
+	protected List<T> mData;
+	protected IXAdapter<T> adapterInterface;
+	protected LayoutInflater inflater;
+	protected Context context;
 
 	public XAdapter(Context context, List<T> mData,
-			ISuperAdapter<T> adapterInterface) {
+			IXAdapter<T> adapterInterface) {
 		this.mData = mData;
+		if (this.mData == null) {
+			this.mData = new ArrayList<T>();
+		}
 		this.adapterInterface = adapterInterface;
 		this.context = context;
 		inflater = LayoutInflater.from(context);
@@ -28,7 +44,7 @@ public abstract class XAdapter<T> extends BaseAdapter {
 		return mData;
 	}
 
-	public ISuperAdapter<T> getAdapterInterface() {
+	public IXAdapter<T> getAdapterInterface() {
 		return adapterInterface;
 	}
 
@@ -37,7 +53,7 @@ public abstract class XAdapter<T> extends BaseAdapter {
 		this.notifyDataSetChanged();
 	}
 
-	public void setAdapterInterface(ISuperAdapter<T> adapterInterface) {
+	public void setAdapterInterface(IXAdapter<T> adapterInterface) {
 		this.adapterInterface = adapterInterface;
 	}
 
@@ -50,7 +66,8 @@ public abstract class XAdapter<T> extends BaseAdapter {
 	@Override
 	public T getItem(int position) {
 
-		return mData == null ? null : mData.get(position);
+		return position > -1 ? mData == null ? null : mData.get(position)
+				: null;
 	}
 
 	@Override
@@ -76,37 +93,6 @@ public abstract class XAdapter<T> extends BaseAdapter {
 
 	}
 
-	public void add(T t) {
-		if (mData != null)
-			mData.add(t);
-	}
-
-	/***
-	 * 向列表尾部添加数据
-	 * */
-	public void addAll(List<T> mData) {
-
-		if (mData != null)
-			this.mData.addAll(mData);
-		else {
-			this.mData = mData;
-		}
-
-		this.notifyDataSetChanged();
-	}
-
-	public void remove(int index) {
-		if (mData != null && -1 < index && index < mData.size())
-			mData.remove(index);
-		this.notifyDataSetChanged();
-
-	}
-
-	public void remove(T object) {
-		if (mData != null)
-			mData.remove(object);
-	}
-
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		if (adapterInterface != null)
@@ -118,6 +104,52 @@ public abstract class XAdapter<T> extends BaseAdapter {
 			tv.setText("没有设置 ISuperAdapter");
 			return tv;
 		}
+	}
+
+	public XAdapter<T> add(int location, T object) {
+		mData.add(location, object);
+		return this;
+
+	}
+
+	public boolean add(T object) {
+		if (mData != null)
+			return mData.add(object);
+		else
+			return false;
+	}
+
+	public boolean addAll(Collection<? extends T> collection) {
+		if (mData != null)
+			return mData.addAll(collection);
+		else
+			return false;
+	}
+
+	public XAdapter<T> clear() {
+		mData.clear();
+		return this;
+	}
+
+	public T remove(int location) {
+		if (mData != null)
+			return mData.remove(location);
+		else
+			return null;
+	}
+
+	public boolean remove(Object object) {
+		if (mData != null)
+			return mData.remove(object);
+		else
+			return false;
+	}
+
+	public boolean removeAll(Collection<?> collection) {
+		if (mData != null)
+			return mData.removeAll(collection);
+		else
+			return false;
 	}
 
 }

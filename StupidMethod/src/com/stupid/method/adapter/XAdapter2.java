@@ -1,16 +1,13 @@
 package com.stupid.method.adapter;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.stupid.method.util.XLog;
 
 /**
  * 使用反射做adapter<br>
@@ -20,68 +17,63 @@ import com.stupid.method.util.XLog;
  * 时 <br>
  * 对viewholder进行实例化. 初始化view
  * 
- * @未来 打算重写 ViewHolder,给改成接口形式的,
- * 
+ * V1.6
  * **/
-public class XAdapter2<T> extends XAdapter<T> implements ISuperAdapter<T> {
-	private static final String tag = "XAdapter";
-	private Class<T> ViewBean;
-	private Constructor<?> mConstructor;
+public class XAdapter2<T> extends XAdapter<T> implements IXAdapter<T> {
+	private static final String tag = "XAdapter2";
+	private Class<T> viewBean;
 	private OnClickItemListener clickItemListener;
-
 	private OnLongClickItemListener longClickItemListener;
 
 	public XAdapter2(Context context, List<T> mData,
-			Class<? extends XViewHolder<T>> xViewHolder) {
+			Class<? extends IXViewHolder> xViewHolder) {
 		super(context, mData, null);
 		super.setAdapterInterface(this);
 
 		try {
-			this.ViewBean = (Class<T>) Class.forName(xViewHolder.getName());
-			mConstructor = ViewBean.getConstructor(LayoutInflater.class);
+			this.viewBean = (Class<T>) Class.forName(xViewHolder.getName());
 		} catch (ClassNotFoundException e) {
-
+			this.viewBean = null;
 			e.printStackTrace();
 
-		} catch (NoSuchMethodException e) {
-
-			e.printStackTrace();
 		}
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public View convertView(int position, View convertView, ViewGroup parent,
 			List<T> mData, LayoutInflater inflater) {
-		XViewHolder<T> view = null;
+		IXViewHolder holder = null;
 
 		if (convertView == null) {
-			// 在这里写 反射
 
-			try {
-				if (mConstructor != null) {
-					view = (XViewHolder<T>) mConstructor.newInstance(inflater);
-					if (clickItemListener != null)
-						view.setOnClickItemListener(this.clickItemListener);
-					if (longClickItemListener != null)
-						view.setOnLongClickItemListener(longClickItemListener);
+			if (viewBean != null) {
+
+				try {
+					holder = (IXViewHolder) viewBean.newInstance();
+					holder.setInflater(inflater);
+					holder.onCreat(this, context);
+					holder.setOnClickItemListener(this.clickItemListener);
+					holder.setOnLongClickItemListener(longClickItemListener);
+				} catch (InstantiationException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
 				}
-			} catch (InstantiationException e) {
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
+
+			} else {
+				Log.e(tag, "没有设置 IXViewHolder ");
+				return super.getView(position, convertView, parent);
 			}
 
 		} else {
-			view = (XViewHolder<T>) convertView.getTag();
+			holder = (IXViewHolder) convertView.getTag();
+			holder.onDestory(position);
 		}
-
-		return view.getView(mData.get(position), position);
+		if (holder != null)
+			return holder.getView(mData.get(position), position);
+		else
+			return super.getView(position, convertView, parent);
 	}
 
 	public OnClickItemListener getClickItemListener() {
