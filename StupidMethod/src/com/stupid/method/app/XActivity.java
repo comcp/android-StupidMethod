@@ -76,7 +76,6 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 			public void run() {
 				// TODO 暂时先这么写着;
 				Toast.makeText(getContent(), text, duration).show();
-
 			}
 		});
 

@@ -1,5 +1,6 @@
 package com.stupid.method.app;
 
+import java.lang.reflect.Field;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -22,7 +23,7 @@ abstract public class XDialogFragment extends DialogFragment implements
 	private View mRootView;
 	private Timer timer = new Timer();
 	protected Object data;
-	TimerTask task = new TimerTask() {
+	XTimerTask task = new XTimerTask() {
 
 		@Override
 		public void run() {
@@ -58,18 +59,19 @@ abstract public class XDialogFragment extends DialogFragment implements
 		super.dismiss();
 		if (null != dialogCallback)
 			dialogCallback.onDismiss();
-		if (timer != null)
-			task.cancel();
+		if (timer != null) {
+
+			task.reset();
+			timer.purge();
+		}
 	}
 
 	public void show(XActivity xActivity, boolean cancel, long timeout) {
 		setCancelable(cancel);
 		setStyle(DialogFragment.STYLE_NO_TITLE, 0);
-		// onAttach(xActivity);
-
 		show(xActivity.getSupportFragmentManager(), this.getClass().getName());
 		if (timeout > 0) {
-			timer.schedule(task, timeout);
+			timer.schedule(task.getTask(), timeout);
 		}
 
 	}
@@ -180,6 +182,33 @@ abstract public class XDialogFragment extends DialogFragment implements
 	public XDialogFragment waitof(String msg, boolean cancel, long timeout) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	abstract public static class XTimerTask implements Runnable {
+		TimerTask task;
+
+		public TimerTask getTask() {
+			if (task == null)
+				task = new TimerTask() {
+
+					@Override
+					public void run() {
+						XTimerTask.this.run();
+
+					}
+				};
+			return task;
+		}
+
+		public boolean reset() {
+
+			if (task != null) {
+				task.cancel();
+				task = null;
+			}
+
+			return false;
+		}
 	}
 
 }

@@ -22,9 +22,4 @@ public class WaitDialog extends XDialogFragment {
 		return R.layout.wait_dialog_fragment;
 	}
 
-	@Override
-	public XDialogFragment waitof(String msg, boolean cancel, long timeout) {
-		return null;
-	}
-
 }
