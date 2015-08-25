@@ -1,6 +1,5 @@
 package com.stupid.method.app;
 
-import java.lang.reflect.Field;
 import java.util.Timer;
 import java.util.TimerTask;
 
