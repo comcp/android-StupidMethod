@@ -1,5 +1,7 @@
 package com.stupid.method.app;
 
+import java.io.File;
+import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -21,22 +23,31 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Point;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Environment;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.WindowManager;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.parser.Feature;
 import com.androidquery.callback.BitmapAjaxCallback;
 import com.stupid.method.db.bean.TmpData;
 import com.stupid.method.db.dao.DaoMaster;
 import com.stupid.method.db.dao.DaoSession;
+import com.stupid.method.util.StringUtils;
 import com.stupid.method.util.XLog;
 
 public class AppManager extends Application {
 
 	public static final String tag = "AppManager";
 	public static final String DB_NAME = "TmpData";
+	public static String root;
+	// app 独立命名空间（文件存储等等）
+	public static String NAMESPACE = null;
+	public static String DIR_FILE = "%s/%sfile" + File.separator;
+	public static String DIR_PICS = "%s/%spics" + File.separator;
+	public static String DIR_THUMB = "%s/%sthumb" + File.separator;
+	public static String SIR_MEDIAS = "%/%ssmedias" + File.separator;
+	public static String DIR_TEMP = "%/%sstemp" + File.separator;
+	public static String DIR_LOGS = "%s/%slogs" + File.separator;
 
 	private static AppManager instance = null;
 	private Point screenSize;
@@ -50,8 +61,42 @@ public class AppManager extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-
+		root = getPath() + "/Android/data/".replace("/", File.separator);
+		if (StringUtils.isBlank(NAMESPACE))
+			NAMESPACE = getPackageName();
 		instance = this;
+		initDir();
+	}
+
+	public void initDir() {
+		  
+		
+		
+		DIR_FILE = String.format(DIR_FILE, root, NAMESPACE);
+		DIR_PICS = String.format(DIR_PICS, root, NAMESPACE);
+		DIR_THUMB = String.format(DIR_THUMB, root, NAMESPACE);
+		SIR_MEDIAS = String.format(SIR_MEDIAS, root, NAMESPACE);
+		DIR_TEMP = String.format(DIR_TEMP, root, NAMESPACE);
+		DIR_LOGS = String.format(DIR_LOGS, root, NAMESPACE);
+		File file = new File(DIR_FILE);
+		if (!file.exists())
+			file.mkdirs();
+		file = new File(DIR_LOGS);
+		if (!file.exists())
+			file.mkdirs();
+
+		file = new File(DIR_PICS);
+		if (!file.exists())
+			file.mkdirs();
+		file = new File(DIR_THUMB);
+		if (!file.exists())
+			file.mkdirs();
+		file = new File(SIR_MEDIAS);
+		if (!file.exists())
+			file.mkdirs();
+		file = new File(DIR_TEMP);
+		if (!file.exists())
+			file.mkdirs();
 
 	}
 
@@ -335,4 +380,21 @@ public class AppManager extends Application {
 		this.sharedPreferences = sharedPreferences;
 	}
 
+	public String getPath() {
+		File sdDir = null;
+		boolean sdCardExist = Environment.getExternalStorageState().equals(
+				android.os.Environment.MEDIA_MOUNTED);
+		// 判断sd卡是否存在
+		if (sdCardExist) {
+			sdDir = Environment.getExternalStorageDirectory();// 获取跟目录
+
+		} else {
+
+			sdDir = getExternalCacheDir();
+		}
+		if (sdDir != null)
+			return sdDir.getAbsolutePath();
+		else
+			return getCacheDir().getAbsolutePath();
+	}
 }
