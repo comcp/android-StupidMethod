@@ -44,8 +44,9 @@ abstract public class XFragment extends Fragment implements IXFragment {
 
 	public AQuery ajax(int CallBack_id, String url, MapUtil<String, ?> params) {
 
-		return getContent().getAQuery().ajax(url, params.getHashMap(),
-				String.class, new AQCallbackString(CallBack_id, this));
+		return getContent().getAQuery().ajax(url,
+				params == null ? null : params.getHashMap(), String.class,
+				new AQCallbackString(CallBack_id, this));
 
 	}
 
