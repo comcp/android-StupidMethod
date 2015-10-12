@@ -1,6 +1,7 @@
 package com.stupid.method.app;
 
 import java.util.List;
+import java.util.Map;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -20,7 +21,6 @@ import com.stupid.method.adapter.XFragmentPagerAdapter.FragmentParam;
 import com.stupid.method.androidquery.expansion.AQCallbackString;
 import com.stupid.method.app.impl.WaitDialog;
 import com.stupid.method.db.bean.TmpData;
-import com.stupid.method.util.MapUtil;
 import com.stupid.method.util.XLog;
 
 /**
@@ -60,10 +60,9 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 	 * @回调:{@link XActivity#callback(String, String, AjaxStatus, int)}
 	 * 
 	 * **/
-	public AQuery ajax(int CallBack_id, String url, MapUtil<String, ?> params) {
+	public AQuery ajax(int CallBack_id, String url, Map<String, ?> params) {
 
-		return getAQuery().ajax(url,
-				params == null ? null : params.getHashMap(), String.class,
+		return getAQuery().ajax(url, params, String.class,
 				new AQCallbackString(CallBack_id, this));
 
 	}

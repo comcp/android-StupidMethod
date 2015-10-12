@@ -1,8 +1,9 @@
 package com.stupid.method.app;
 
+import java.util.Map;
+
 import com.androidquery.AQuery;
 import com.stupid.method.androidquery.expansion.AQCallbackListener;
-import com.stupid.method.util.MapUtil;
 
 /**
  * Activity 需要实现的方法,都在这里定义好之后,去实现 <br>
@@ -11,7 +12,7 @@ import com.stupid.method.util.MapUtil;
  * ***/
 public interface IXActivity extends AQCallbackListener {
 
-	AQuery ajax(int CallBack_id, String url, MapUtil<String, ?> params);
+	AQuery ajax(int CallBack_id, String url, Map<String, ?> params);
 
 	void showToast(String text, int duration);
 

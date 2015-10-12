@@ -42,12 +42,12 @@ public class AppManager extends Application {
 	public static String root;
 	// app 独立命名空间（文件存储等等）
 	public static String NAMESPACE = null;
-	public static String DIR_FILE = "%s/%sfile" + File.separator;
-	public static String DIR_PICS = "%s/%spics" + File.separator;
-	public static String DIR_THUMB = "%s/%sthumb" + File.separator;
-	public static String SIR_MEDIAS = "%/%ssmedias" + File.separator;
-	public static String DIR_TEMP = "%/%sstemp" + File.separator;
-	public static String DIR_LOGS = "%s/%slogs" + File.separator;
+	public static String DIR_FILE = "%s%s/file" + File.separator;
+	public static String DIR_PICS = "%s%s/pics" + File.separator;
+	public static String DIR_THUMB = "%s%s/thumb" + File.separator;
+	public static String SIR_MEDIAS = "%s%s/smedias" + File.separator;
+	public static String DIR_TEMP = "%s%s/stemp" + File.separator;
+	public static String DIR_LOGS = "%s%s/logs" + File.separator;
 
 	private static AppManager instance = null;
 	private Point screenSize;
@@ -65,13 +65,11 @@ public class AppManager extends Application {
 		if (StringUtils.isBlank(NAMESPACE))
 			NAMESPACE = getPackageName();
 		instance = this;
-		initDir();
+		// initDir();
 	}
 
 	public void initDir() {
-		  
-		
-		
+
 		DIR_FILE = String.format(DIR_FILE, root, NAMESPACE);
 		DIR_PICS = String.format(DIR_PICS, root, NAMESPACE);
 		DIR_THUMB = String.format(DIR_THUMB, root, NAMESPACE);

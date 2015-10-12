@@ -1,0 +1,27 @@
+package com.stupid.method.util.http;
+
+/**
+ * 一切源自懒癌
+ * 
+ * 服务器返回调用
+ * 
+ * @author comcp@126.com <br>
+ *         github: https://github.com/comcp/android-StupidMethod
+ * @version v1.6
+ * **/
+public interface IXHttpResultListener {
+
+	/**
+	 * @param resultCode
+	 *            回调id, 就是你请求的时候填写的 code
+	 * 
+	 * @param data
+	 *            服务器返回的数据
+	 * @param state
+	 *            请求状态
+	 * @param httpCode
+	 *            http request code
+	 * ****/
+	public void onServerResult(int resultCode, String data, boolean state,
+			int statusCode);
+}

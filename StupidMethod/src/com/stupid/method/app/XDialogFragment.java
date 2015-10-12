@@ -1,5 +1,6 @@
 package com.stupid.method.app;
 
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -13,7 +14,6 @@ import android.view.ViewGroup;
 
 import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
-import com.stupid.method.util.MapUtil;
 
 abstract public class XDialogFragment extends DialogFragment implements
 		IXFragment {
@@ -85,7 +85,7 @@ abstract public class XDialogFragment extends DialogFragment implements
 	}
 
 	@Override
-	public AQuery ajax(int CallBack_id, String url, MapUtil<String, ?> params) {
+	public AQuery ajax(int CallBack_id, String url, Map<String, ?> params) {
 
 		return null;
 	}

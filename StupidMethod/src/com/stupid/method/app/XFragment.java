@@ -1,5 +1,7 @@
 package com.stupid.method.app;
 
+import java.util.Map;
+
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,7 +13,6 @@ import com.androidquery.AQuery;
 import com.androidquery.callback.AjaxStatus;
 import com.stupid.method.adapter.XFragmentPagerAdapter.FragmentParam;
 import com.stupid.method.androidquery.expansion.AQCallbackString;
-import com.stupid.method.util.MapUtil;
 import com.stupid.method.util.XLog;
 
 abstract public class XFragment extends Fragment implements IXFragment {
@@ -28,24 +29,24 @@ abstract public class XFragment extends Fragment implements IXFragment {
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-		if (null != mRootView) {
-			ViewGroup parent = (ViewGroup) mRootView.getParent();
+		if (null != getRootView()) {
+			ViewGroup parent = (ViewGroup) getRootView().getParent();
 			if (null != parent) {
-				parent.removeView(mRootView);
+				parent.removeView(getRootView());
 				parent = null;
 			}
 		} else {
-			mRootView = inflater.inflate(getLayoutId(), null);
+			setRootView(inflater.inflate(getLayoutId(), null));
 			initPager(savedInstanceState, data);
 
 		}
-		return mRootView;
+		return getRootView();
 	}
 
-	public AQuery ajax(int CallBack_id, String url, MapUtil<String, ?> params) {
+	public AQuery ajax(int CallBack_id, String url, Map<String, ?> params) {
 
 		return getContent().getAQuery().ajax(url,
-				params == null ? null : params.getHashMap(), String.class,
+				params == null ? null : params, String.class,
 				new AQCallbackString(CallBack_id, this));
 
 	}
@@ -64,7 +65,7 @@ abstract public class XFragment extends Fragment implements IXFragment {
 	@Override
 	public View findViewById(int id) {
 
-		return mRootView.findViewById(id);
+		return getRootView().findViewById(id);
 	}
 
 	public XActivity getContent() {
@@ -161,6 +162,10 @@ abstract public class XFragment extends Fragment implements IXFragment {
 			return getContent().waitof(msg, cancel, timeout);
 		} else
 			return null;
+	}
+
+	public void setRootView(View mRootView) {
+		this.mRootView = mRootView;
 	}
 
 }
