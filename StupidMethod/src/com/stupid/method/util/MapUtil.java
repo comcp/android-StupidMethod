@@ -290,6 +290,6 @@ public class MapUtil {
 
 	public static <K, V> HashMaps<K, V> asMap(K key, V value) {
 
-		return new HashMaps<K, V>();
+		return new HashMaps<K, V>().add(key, value);
 	}
 }

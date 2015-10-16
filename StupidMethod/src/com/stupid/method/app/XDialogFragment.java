@@ -1,6 +1,5 @@
 package com.stupid.method.app;
 
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -13,7 +12,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
 import com.androidquery.AQuery;
-import com.androidquery.callback.AjaxStatus;
+import com.stupid.method.util.http.IXHttp;
 
 abstract public class XDialogFragment extends DialogFragment implements
 		IXFragment {
@@ -77,17 +76,6 @@ abstract public class XDialogFragment extends DialogFragment implements
 
 	public boolean isShowing() {
 		return getDialog() == null ? false : getDialog().isShowing();
-	}
-
-	@Override
-	public void callback(String url, String callback_data, AjaxStatus status,
-			int CallBack_id) {
-	}
-
-	@Override
-	public AQuery ajax(int CallBack_id, String url, Map<String, ?> params) {
-
-		return null;
 	}
 
 	@Override
@@ -210,4 +198,14 @@ abstract public class XDialogFragment extends DialogFragment implements
 		}
 	}
 
+	@Override
+	public IXHttp getHttp() {
+
+		return getHttp();
+	}
+
+	@Override
+	public void onServerResult(int resultCode, String data, boolean state,
+			int statusCode) {
+	}
 }

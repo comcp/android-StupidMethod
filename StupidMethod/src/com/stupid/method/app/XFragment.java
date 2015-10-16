@@ -14,6 +14,7 @@ import com.androidquery.callback.AjaxStatus;
 import com.stupid.method.adapter.XFragmentPagerAdapter.FragmentParam;
 import com.stupid.method.androidquery.expansion.AQCallbackString;
 import com.stupid.method.util.XLog;
+import com.stupid.method.util.http.IXHttp;
 
 abstract public class XFragment extends Fragment implements IXFragment {
 	static final String TAG = "XFragment";
@@ -43,14 +44,6 @@ abstract public class XFragment extends Fragment implements IXFragment {
 		return getRootView();
 	}
 
-	public AQuery ajax(int CallBack_id, String url, Map<String, ?> params) {
-
-		return getContent().getAQuery().ajax(url,
-				params == null ? null : params, String.class,
-				new AQCallbackString(CallBack_id, this));
-
-	}
-
 	@Override
 	public AQuery getAQuery() {
 
@@ -75,17 +68,6 @@ abstract public class XFragment extends Fragment implements IXFragment {
 
 	public View getRootView() {
 		return mRootView;
-	}
-
-	@Override
-	public void callback(String url, String callback_data, AjaxStatus status,
-			int CallBack_id) {
-		if (AppConfig.DEBUG && status.getCode() != 200) {
-			XLog.d(TAG, status.getMessage());
-			XLog.d(TAG, status.getError());
-			XLog.d(TAG, url);
-
-		}
 	}
 
 	public FragmentParam pushFragmentToBackStack(Class<?> cls, Object data) {
@@ -168,4 +150,14 @@ abstract public class XFragment extends Fragment implements IXFragment {
 		this.mRootView = mRootView;
 	}
 
+	@Override
+	public IXHttp getHttp() {
+
+		return getContent().getHttp();
+	}
+
+	@Override
+	public void onServerResult(int resultCode, String data, boolean state,
+			int statusCode) {
+	}
 }

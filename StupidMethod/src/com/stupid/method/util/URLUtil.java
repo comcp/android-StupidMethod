@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class URLUtil {
 
@@ -38,7 +39,7 @@ public class URLUtil {
 	 * @return if url is null, process it as empty string
 	 */
 	public static String getUrlWithParas(String url,
-			Map<String, String> parasMap) {
+			Map<String, ? extends Object> parasMap) {
 
 		StringBuilder urlWithParas = new StringBuilder(
 				StringUtils.isEmpty(url) ? ""
@@ -83,17 +84,15 @@ public class URLUtil {
 	 * @return join key and value with {@link #EQUAL_SIGN}, join keys with
 	 *         {@link #PARAMETERS_SEPARATOR}
 	 */
-	public static String joinParas(Map<String, String> parasMap) {
+	public static String joinParas(Map<String, ? extends Object> parasMap) {
 		if (parasMap == null || parasMap.size() == 0) {
 			return null;
 		}
 
 		StringBuilder paras = new StringBuilder();
-		Iterator<Map.Entry<String, String>> ite = parasMap.entrySet()
-				.iterator();
+		Iterator<?> ite = parasMap.entrySet().iterator();
 		while (ite.hasNext()) {
-			Map.Entry<String, String> entry = (Map.Entry<String, String>) ite
-					.next();
+			Map.Entry entry = (Entry) ite.next();
 			paras.append(entry.getKey()).append(EQUAL_SIGN)
 					.append(entry.getValue());
 			if (ite.hasNext()) {

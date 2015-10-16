@@ -1,7 +1,6 @@
 package com.stupid.method.app;
 
 import java.util.List;
-import java.util.Map;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -15,13 +14,14 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.androidquery.AQuery;
-import com.androidquery.callback.AjaxStatus;
 import com.stupid.method.BuildConfig;
 import com.stupid.method.adapter.XFragmentPagerAdapter.FragmentParam;
-import com.stupid.method.androidquery.expansion.AQCallbackString;
 import com.stupid.method.app.impl.WaitDialog;
 import com.stupid.method.db.bean.TmpData;
 import com.stupid.method.util.XLog;
+import com.stupid.method.util.http.IXHttp;
+import com.stupid.method.util.http.aquery.AQueryHttp;
+import com.stupid.method.util.http.impl.XHttp;
 
 /**
  * 我也不知道为啥就用了X作为类的开头<br>
@@ -34,6 +34,7 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 	private static long DOUBLE_CLICK_MENU = -1;
 	private AQuery $;
 	private XFragment mCurrentFragment;
+	private XHttp http;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,23 +49,17 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 	}
 
 	@Override
+	public IXHttp getHttp() {
+		if (http == null)
+			http = new XHttp(new AQueryHttp(getAQuery()));
+		return http;
+	}
+
+	@Override
 	public AQuery getAQuery() {
 		if ($ == null)
 			$ = new AQuery(this);
 		return $;
-	}
-
-	/**
-	 * 从服务器请求数据
-	 * 
-	 * @回调:{@link XActivity#callback(String, String, AjaxStatus, int)}
-	 * 
-	 * **/
-	public AQuery ajax(int CallBack_id, String url, Map<String, ?> params) {
-
-		return getAQuery().ajax(url, params, String.class,
-				new AQCallbackString(CallBack_id, this));
-
 	}
 
 	public void showToast(final String text, final int duration) {
@@ -93,27 +88,6 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 	public void showToast(int text, int duration) {
 		showToast(getResources().getString(text), duration);
 
-	}
-
-	/**
-	 * @param url
-	 *            请求的URL
-	 * @param callback_data
-	 *            从服务器请求回来的数据
-	 * @param status
-	 *            aquery 原始数据
-	 * @param CallBack_id
-	 *            回调id
-	 * ***/
-	@Override
-	public void callback(String url, String callback_data, AjaxStatus status,
-			int CallBack_id) {
-		if (AppConfig.DEBUG && status.getCode() != 200) {
-			XLog.d(tag, status.getMessage());
-			XLog.d(tag, status.getError());
-			XLog.d(tag, url);
-
-		}
 	}
 
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -348,5 +322,10 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 		if (xdialog != null && xdialog.isShowing())
 			xdialog.dismiss();
 
+	}
+
+	@Override
+	public void onServerResult(int resultCode, String data, boolean state,
+			int statusCode) {
 	}
 }
