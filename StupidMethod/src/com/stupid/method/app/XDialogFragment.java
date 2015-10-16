@@ -35,6 +35,11 @@ abstract public class XDialogFragment extends DialogFragment implements
 	};
 
 	@Override
+	public void onServerResult(int resultCode, String data, boolean state,
+			int statusCode) {
+	}
+
+	@Override
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		if (null != mRootView) {
@@ -198,14 +203,4 @@ abstract public class XDialogFragment extends DialogFragment implements
 		}
 	}
 
-	@Override
-	public IXHttp getHttp() {
-
-		return getHttp();
-	}
-
-	@Override
-	public void onServerResult(int resultCode, String data, boolean state,
-			int statusCode) {
-	}
 }

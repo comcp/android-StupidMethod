@@ -1,7 +1,5 @@
 package com.stupid.method.app;
 
-import java.util.List;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -17,11 +15,7 @@ import com.androidquery.AQuery;
 import com.stupid.method.BuildConfig;
 import com.stupid.method.adapter.XFragmentPagerAdapter.FragmentParam;
 import com.stupid.method.app.impl.WaitDialog;
-import com.stupid.method.db.bean.TmpData;
 import com.stupid.method.util.XLog;
-import com.stupid.method.util.http.IXHttp;
-import com.stupid.method.util.http.aquery.AQueryHttp;
-import com.stupid.method.util.http.impl.XHttp;
 
 /**
  * 我也不知道为啥就用了X作为类的开头<br>
@@ -34,7 +28,6 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 	private static long DOUBLE_CLICK_MENU = -1;
 	private AQuery $;
 	private XFragment mCurrentFragment;
-	private XHttp http;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,13 +39,6 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 	public XActivity getContent() {
 
 		return this;
-	}
-
-	@Override
-	public IXHttp getHttp() {
-		if (http == null)
-			http = new XHttp(new AQueryHttp(getAQuery()));
-		return http;
 	}
 
 	@Override
@@ -101,28 +87,10 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 		return super.onKeyDown(keyCode, event);
 	}
 
-	public void setTmpData(String key, String value) {
-
-		AppManager.getInstance().setTmpData(key, value);
-
-	}
-
-	public TmpData getTmpData(String key) {
-
-		return AppManager.getInstance().getTmpData(key);
-
-	}
-
 	@Override
 	protected void onStop() {
 
 		super.onStop();
-	}
-
-	public List<TmpData> getTmpDataAll() {
-
-		return AppManager.getInstance().getTmpDataAll();
-
 	}
 
 	/** 隐藏键盘 **/
@@ -327,5 +295,10 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 	@Override
 	public void onServerResult(int resultCode, String data, boolean state,
 			int statusCode) {
+	}
+
+	public XActivity self() {
+
+		return this;
 	}
 }

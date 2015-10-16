@@ -66,4 +66,5 @@ public interface IXHttp {
 
 	IXHttp postString(int resultCode, String contentType, String url,
 			String data, IXServerResultListener resultListener);
+
 }

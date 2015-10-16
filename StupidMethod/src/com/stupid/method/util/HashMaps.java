@@ -6,10 +6,17 @@ import java.util.Map;
 import java.util.Set;
 
 public class HashMaps<K, V> implements Map<K, V> {
-	private HashMap<K, V> map;
+	private Map<K, V> map;
 
 	HashMaps() {
 		setMap(new HashMap<K, V>());
+	}
+
+	HashMaps(Map<K, V> map) {
+		if (map == null)
+			setMap(new HashMap<K, V>());
+		else
+			this.map = map;
 	}
 
 	public void clear() {
@@ -73,7 +80,7 @@ public class HashMaps<K, V> implements Map<K, V> {
 		return this;
 	}
 
-	public HashMap<K, V> getMap() {
+	public Map<K, V> getMap() {
 		return map;
 	}
 

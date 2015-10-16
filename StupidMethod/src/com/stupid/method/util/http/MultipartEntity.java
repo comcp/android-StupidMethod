@@ -22,6 +22,7 @@ public class MultipartEntity implements HttpEntity {
 			.getBytes();
 	private static final byte[] lineEnd = "\r\n".getBytes();
 	private static final byte[] twoHyphens = "--".getBytes();
+
 	ByteArrayOutputStream out = new ByteArrayOutputStream();
 	private Map<String, Object> params;
 

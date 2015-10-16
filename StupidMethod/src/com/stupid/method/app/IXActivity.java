@@ -26,8 +26,6 @@ public interface IXActivity extends IXServerResultListener {
 
 	AQuery getAQuery();
 
-	IXHttp getHttp();
-
 	/** 获得容器id **/
 	int getLayoutId();
 
@@ -40,5 +38,7 @@ public interface IXActivity extends IXServerResultListener {
 	XDialogFragment waitof();
 
 	void waitEnd();
+
+	IXHttp getHttp();
 
 }

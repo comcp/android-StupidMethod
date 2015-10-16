@@ -13,7 +13,7 @@ public interface IXServerResultListener {
 
 	/**
 	 * @param resultCode
-	 *            回调id, 就是你请求的时候填写的 code
+	 *            回调code, 就是你请求的时候填写的 int
 	 * 
 	 * @param data
 	 *            服务器返回的数据
@@ -22,6 +22,7 @@ public interface IXServerResultListener {
 	 * @param httpCode
 	 *            http request code
 	 * ****/
-	public void onServerResult(int resultCode, String data, boolean state,
+	void onServerResult(int resultCode, String data, boolean state,
 			int statusCode);
+
 }

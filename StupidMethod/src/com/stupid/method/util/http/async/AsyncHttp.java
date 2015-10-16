@@ -6,11 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.WeakHashMap;
 
 import org.apache.http.HttpEntity;
-
-import android.content.Context;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
@@ -19,7 +16,6 @@ import com.stupid.method.util.http.IXHttp;
 import com.stupid.method.util.http.IXServerResultListener;
 
 public class AsyncHttp extends AbsIXHttp {
-	private static WeakHashMap<Context, AsyncHttpClient> weakHashMap = new WeakHashMap<Context, AsyncHttpClient>();
 
 	private static AsyncHttpClient query = new AsyncHttpClient();
 	static {

@@ -13,7 +13,8 @@ public class AsyncResultString extends TextHttpResponseHandler implements
 	private int resultCode;
 	private IXServerResultListener resultListener;
 
-	public AsyncResultString(int resultCode, IXServerResultListener resultListener) {
+	public AsyncResultString(int resultCode,
+			IXServerResultListener resultListener) {
 		setResultCode(resultCode);
 		setResultListener(resultListener);
 
@@ -92,4 +93,5 @@ public class AsyncResultString extends TextHttpResponseHandler implements
 	public void setResultListener(IXServerResultListener resultListener) {
 		this.resultListener = resultListener;
 	}
+
 }

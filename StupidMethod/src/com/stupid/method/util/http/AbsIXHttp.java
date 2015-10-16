@@ -13,12 +13,18 @@ abstract public class AbsIXHttp implements IXHttp {
 
 	private String charset = CHARSET_DEFAULT;
 	private String contentType = CONTENT_TYPE_DEFAULT;
+	private Map<String, String> defineHead = MapUtil.asMap("class-name",
+			"AbsIXHttp").add("tools", "IXHTTP");
+
+	{
+		defineHead.put("class-name", this.getClass().getSimpleName());
+
+	}
 
 	@Override
 	final public Map<String, String> defineHead() {
 
-		return MapUtil.asMap("class-name", this.getClass().getSimpleName())
-				.add("tools", "IXHTTP");
+		return defineHead;
 	}
 
 	@Override

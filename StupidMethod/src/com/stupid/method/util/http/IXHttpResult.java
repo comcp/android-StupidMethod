@@ -11,4 +11,5 @@ public interface IXHttpResult {
 	void setResultCode(int resultCode);
 
 	void setResultListener(IXServerResultListener resultListener);
+
 }

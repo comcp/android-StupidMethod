@@ -1,12 +1,10 @@
 package com.stupid.method.app;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -24,14 +22,11 @@ import android.graphics.Point;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Environment;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
 import com.alibaba.fastjson.JSON;
-import com.androidquery.callback.BitmapAjaxCallback;
-import com.stupid.method.db.bean.TmpData;
-import com.stupid.method.db.dao.DaoMaster;
-import com.stupid.method.db.dao.DaoSession;
 import com.stupid.method.util.StringUtils;
 import com.stupid.method.util.XLog;
 
@@ -39,7 +34,7 @@ public class AppManager extends Application {
 
 	public static final String tag = "AppManager";
 	public static final String DB_NAME = "TmpData";
-	public static String root;
+	private static String root;
 	// app 独立命名空间（文件存储等等）
 	public static String NAMESPACE = null;
 	public static String DIR_FILE = "%s%s/file" + File.separator;
@@ -54,14 +49,16 @@ public class AppManager extends Application {
 	private int versionCode = -1;
 	private SharedPreferences sharedPreferences;
 	private ExecutorService mExecutor = Executors.newFixedThreadPool(5);
+	private Handler mHandler = new Handler();
 
-	private static DaoMaster daoMaster;
-	private static DaoSession daoSession;
+	public final boolean post(Runnable r) {
+		return mHandler.post(r);
+	}
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		root = getPath() + "/Android/data/".replace("/", File.separator);
+		root = getPath() + "/Android/data/";
 		if (StringUtils.isBlank(NAMESPACE))
 			NAMESPACE = getPackageName();
 		instance = this;
@@ -95,12 +92,6 @@ public class AppManager extends Application {
 		file = new File(DIR_TEMP);
 		if (!file.exists())
 			file.mkdirs();
-
-	}
-
-	@Override
-	public void onTerminate() {
-		super.onTerminate();
 
 	}
 
@@ -158,71 +149,6 @@ public class AppManager extends Application {
 			screenSize = new Point(dm.widthPixels, dm.heightPixels);
 		}
 		return screenSize;
-	}
-
-	/**
-	 * DaoMaster
-	 * 
-	 * @param context
-	 * @return
-	 */
-	public static DaoMaster getDaoMaster(Context context) {
-		if (daoMaster == null) {
-			DaoMaster.OpenHelper helper = new DaoMaster.DevOpenHelper(context,
-					DB_NAME, null);
-			daoMaster = new DaoMaster(helper.getWritableDatabase());
-		}
-		return daoMaster;
-	}
-
-	/**
-	 * @DaoSession
-	 * 
-	 * @param context
-	 * @return
-	 */
-	public static DaoSession getDaoSession(Context context) {
-		if (daoSession == null) {
-			if (daoMaster == null) {
-				daoMaster = getDaoMaster(context);
-			}
-			daoSession = daoMaster.newSession();
-		}
-		return daoSession;
-	}
-
-	public void setTmpData(String key, String value) {
-
-		getDaoSession(this).getTmpDataDao().deleteByKey(key);
-		getDaoSession(this).getTmpDataDao().insert(
-				new TmpData(key, value, new Date()));
-
-	}
-
-	public TmpData getTmpData(String key) {
-
-		List<TmpData> l = getDaoSession(this).getTmpDataDao().queryRaw(
-				" where key=?", key);
-
-		return l.size() > 0 ? l.get(0) : null;
-
-	}
-
-	public List<TmpData> getTmpDataAll() {
-
-		List<TmpData> l = getDaoSession(this).getTmpDataDao().queryBuilder()
-				.list();
-
-		return l;
-
-	}
-
-	@Override
-	public void onLowMemory() {
-		// clear all memory cached images when system is in low memory
-		// note that you can configure the max image cache count, see
-		// CONFIGURATION
-		BitmapAjaxCallback.clearCache();
 	}
 
 	/**
@@ -395,4 +321,13 @@ public class AppManager extends Application {
 		else
 			return getCacheDir().getAbsolutePath();
 	}
+
+	@Override
+	public void onLowMemory() {
+		// clear all memory cached images when system is in low memory
+		// note that you can configure the max image cache count, see
+		// CONFIGURATION
+		com.androidquery.callback.BitmapAjaxCallback.clearCache();
+	}
+
 }

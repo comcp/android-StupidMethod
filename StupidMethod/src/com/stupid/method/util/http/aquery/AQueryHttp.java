@@ -12,6 +12,7 @@ import android.content.Context;
 import com.androidquery.AQuery;
 import com.stupid.method.util.StringUtils;
 import com.stupid.method.util.http.AbsIXHttp;
+import com.stupid.method.util.http.IXDataFilter;
 import com.stupid.method.util.http.IXHttp;
 import com.stupid.method.util.http.IXServerResultListener;
 

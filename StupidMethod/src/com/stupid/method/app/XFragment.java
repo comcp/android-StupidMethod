@@ -151,12 +151,6 @@ abstract public class XFragment extends Fragment implements IXFragment {
 	}
 
 	@Override
-	public IXHttp getHttp() {
-
-		return getContent().getHttp();
-	}
-
-	@Override
 	public void onServerResult(int resultCode, String data, boolean state,
 			int statusCode) {
 	}

@@ -30,4 +30,10 @@ public class WaitDialog extends XDialogFragment {
 		return getContent().getAQuery();
 	}
 
+	@Override
+	public IXHttp getHttp() {
+
+		return null;
+	}
+
 }
