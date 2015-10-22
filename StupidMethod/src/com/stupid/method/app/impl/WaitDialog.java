@@ -6,7 +6,7 @@ import android.widget.TextView;
 import com.androidquery.AQuery;
 import com.stupid.method.R;
 import com.stupid.method.app.XDialogFragment;
-import com.stupid.method.util.http.IXHttp;
+import com.stupid.method.http.IXHttp;
 
 public class WaitDialog extends XDialogFragment {
 

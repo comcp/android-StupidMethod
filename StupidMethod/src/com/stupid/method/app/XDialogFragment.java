@@ -12,7 +12,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
 import com.androidquery.AQuery;
-import com.stupid.method.util.http.IXHttp;
 
 abstract public class XDialogFragment extends DialogFragment implements
 		IXFragment {

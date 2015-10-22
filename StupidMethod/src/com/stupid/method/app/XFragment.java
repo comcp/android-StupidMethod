@@ -1,7 +1,5 @@
 package com.stupid.method.app;
 
-import java.util.Map;
-
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,11 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.androidquery.AQuery;
-import com.androidquery.callback.AjaxStatus;
 import com.stupid.method.adapter.XFragmentPagerAdapter.FragmentParam;
-import com.stupid.method.androidquery.expansion.AQCallbackString;
-import com.stupid.method.util.XLog;
-import com.stupid.method.util.http.IXHttp;
 
 abstract public class XFragment extends Fragment implements IXFragment {
 	static final String TAG = "XFragment";

@@ -1,8 +1,8 @@
 package com.stupid.method.app;
 
 import com.androidquery.AQuery;
-import com.stupid.method.util.http.IXHttp;
-import com.stupid.method.util.http.IXServerResultListener;
+import com.stupid.method.http.IXHttp;
+import com.stupid.method.http.IXServerResultListener;
 
 /**
  * Activity 需要实现的方法,都在这里定义好之后,去实现 <br>

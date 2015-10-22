@@ -2,6 +2,7 @@ package com.stupid.method.util;
 
 import java.util.List;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.ActivityManager.RunningTaskInfo;
@@ -15,6 +16,7 @@ import android.net.NetworkInfo;
 import android.os.Looper;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.view.WindowManager;
 
 /**
  * AppUtils
@@ -22,7 +24,7 @@ import android.text.TextUtils;
  * <li>{@link AppUtils#isNamedProcess(Context, String)}</li>
  * </ul>
  * 
- * @author <a href="http://www.trinea.cn" target="_blank">Trinea</a> 2014-5-07
+ * @about 在这个 <a href="http://www.trinea.cn" target="_blank"> 哥们</a> 的基础上进行添加封装
  */
 public class AppUtils {
 
@@ -39,9 +41,9 @@ public class AppUtils {
 	public static final String NETWORK_TYPE_WIFI = "wifi";
 
 	/**
-	 * 获得 IMEI
+	 * @return 返回唯一的设备ID，用于GSM和CDMA手机，MEID或ESN的IMEI。如果设备标识不可用，则返回空。
 	 * 
-	 * @return
+	 * 
 	 */
 	public static String getDeviceID(Context context) {
 		return ((TelephonyManager) context
@@ -377,7 +379,6 @@ public class AppUtils {
 		// 返回唯一的用户ID;就是这张卡的编号神马的
 		String IMSI = telephonyManager.getSubscriberId();
 		// IMSI号前面3位460是国家，紧接着后面2位00 02是中国移动，01是中国联通，03是中国电信。
-		System.out.println(IMSI);
 		if (IMSI.startsWith("46000") || IMSI.startsWith("46002")) {
 			ProvidersName = "中国移动";
 		} else if (IMSI.startsWith("46001")) {
@@ -386,5 +387,52 @@ public class AppUtils {
 			ProvidersName = "中国电信";
 		}
 		return ProvidersName;
+	}
+
+	/**
+	 * 获得屏幕亮度信息
+	 * 
+	 * 0最暗<br>
+	 * 
+	 * 1最亮<br>
+	 * 
+	 * -1 是系统默认亮度
+	 * **/
+	public static float getBrightness(Activity activity) {
+
+		return activity.getWindow().getAttributes().screenBrightness;
+	}
+
+	/**
+	 * This can be used to override the user's preferred brightness of the
+	 * screen. A value of less than 0, the default, means to use the preferred
+	 * screen brightness. 0 to 1 adjusts the brightness from dark to full
+	 * bright. <br>
+	 * 0最暗<br>
+	 * 
+	 * 1最亮<br>
+	 * 
+	 * -1 是系统默认亮度
+	 */
+	public static boolean getBrightness(final Activity activity,
+			float brightness) {
+		final WindowManager.LayoutParams layoutParams = activity.getWindow()
+				.getAttributes();
+		layoutParams.screenBrightness = brightness;
+
+		if (isUIThread())
+			activity.getWindow().setAttributes(layoutParams);
+		else
+			activity.runOnUiThread(new Runnable() {
+
+				@Override
+				public void run() {
+					activity.getWindow().setAttributes(layoutParams);
+
+				}
+			});
+
+		return false;
+
 	}
 }
