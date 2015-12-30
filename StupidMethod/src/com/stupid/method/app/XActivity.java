@@ -15,6 +15,7 @@ import com.androidquery.AQuery;
 import com.stupid.method.BuildConfig;
 import com.stupid.method.adapter.XFragmentPagerAdapter.FragmentParam;
 import com.stupid.method.app.impl.WaitDialog;
+import com.stupid.method.util.AutoViewInit;
 import com.stupid.method.util.XLog;
 
 /**
@@ -300,5 +301,10 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 	public XActivity self() {
 
 		return this;
+	}
+
+	protected final void initView() {
+		AutoViewInit.initActivityView(this);
+
 	}
 }

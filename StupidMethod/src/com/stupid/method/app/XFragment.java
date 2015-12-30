@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.androidquery.AQuery;
 import com.stupid.method.adapter.XFragmentPagerAdapter.FragmentParam;
+import com.stupid.method.util.AutoViewInit;
 
 abstract public class XFragment extends Fragment implements IXFragment {
 	static final String TAG = "XFragment";
@@ -147,5 +148,11 @@ abstract public class XFragment extends Fragment implements IXFragment {
 	@Override
 	public void onServerResult(int resultCode, String data, boolean state,
 			int statusCode) {
+	}
+
+	protected final void initView() {
+
+		AutoViewInit.initFragmentView(this, getRootView());
+
 	}
 }
