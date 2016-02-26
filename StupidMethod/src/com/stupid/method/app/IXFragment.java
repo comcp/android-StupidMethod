@@ -1,5 +1,7 @@
 package com.stupid.method.app;
 
+import java.io.Serializable;
+
 import android.os.Bundle;
 import android.view.View;
 
@@ -10,7 +12,7 @@ public interface IXFragment extends IXActivity {
 	 **/
 	void initPager(Bundle savedInstanceState, Object data);
 
-	void setData(Object object);
+	void setData(Serializable object);
 
 	View findViewById(int id);
 

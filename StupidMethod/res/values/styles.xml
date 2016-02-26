@@ -1,4 +1,4 @@
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
 
     <style name="AppBaseTheme" parent="android:Theme.Light"></style>
 
@@ -18,5 +18,21 @@
         <item name="android:gravity">center</item>
         <item name="android:layout_centerVertical">true</item>
     </style>
+    <!-- 动画,下进下出 -->
+    <style name="anim_down_in_up_out">
+        <item name="android:windowEnterAnimation">@anim/window_down_in</item>
+        <item name="android:windowExitAnimation">@anim/window_down_out</item>
+    </style>
+
+   <!--  <style name="XDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style> -->
+<!-- 
+    <style name="XDialog_Fullscreen" >
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowNoTitle">true</item>
+    </style> -->
 
 </resources>

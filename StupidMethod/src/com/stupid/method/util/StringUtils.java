@@ -1,5 +1,6 @@
 package com.stupid.method.util;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.regex.Matcher;
@@ -14,6 +15,35 @@ public class StringUtils {
 
 	private StringUtils() {
 		throw new AssertionError();
+	}
+
+	public static Integer str2Int(String string) {
+		return str2Int(string, 0);
+	}
+
+	public static long str2Long(String string, long defValue) {
+		long res = defValue;
+		try {
+			res = Integer.parseInt(string);
+		} catch (NumberFormatException e) {
+
+			XLog.e("StringUtils", string + " 转 long 失败  ", e);
+
+		}
+		return res;
+	}
+
+	public static Integer str2Int(String string, int defValue) {
+		Integer res = defValue;
+		try {
+			res = Integer.valueOf(string);
+		} catch (NumberFormatException e) {
+
+			XLog.e("StringUtils", string + " 转 int 失败  ", e);
+
+		}
+		return res;
+
 	}
 
 	public static String join(CharSequence delimiter, Object element,

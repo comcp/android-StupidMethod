@@ -1,8 +1,10 @@
 package com.stupid.method.app;
 
+import java.io.Serializable;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -10,8 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
 
-import com.androidquery.AQuery;
+import com.stupid.method.R;
 
 abstract public class XDialogFragment extends DialogFragment implements
 		IXFragment {
@@ -19,7 +22,7 @@ abstract public class XDialogFragment extends DialogFragment implements
 	private onDialogCallback dialogCallback;
 	private View mRootView;
 	private Timer timer = new Timer();
-	protected Object data;
+	protected Serializable data;
 	XTimerTask task = new XTimerTask() {
 
 		@Override
@@ -41,19 +44,22 @@ abstract public class XDialogFragment extends DialogFragment implements
 	@Override
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-		if (null != mRootView) {
-			ViewGroup parent = (ViewGroup) mRootView.getParent();
+		if (null != getRootView()) {
+			ViewGroup parent = (ViewGroup) getRootView().getParent();
 			if (null != parent) {
-				parent.removeView(mRootView);
+				parent.removeView(getRootView());
 				parent = null;
 			}
 		} else {
 
-			mRootView = inflater.inflate(getLayoutId(), container);
+			setRootView(inflater.inflate(getLayoutId(), container));
 
 		}
 		initPager(savedInstanceState, data);
-		return mRootView;
+		Dialog dialog = getDialog();
+		Window window = dialog.getWindow();
+		window.setWindowAnimations(getAnimStyle());
+		return getRootView();
 	}
 
 	@Override
@@ -70,6 +76,7 @@ abstract public class XDialogFragment extends DialogFragment implements
 
 	public void show(XActivity xActivity, boolean cancel, long timeout) {
 		setCancelable(cancel);
+
 		setStyle(DialogFragment.STYLE_NO_TITLE, 0);
 		show(xActivity.getSupportFragmentManager(), this.getClass().getName());
 		if (timeout > 0) {
@@ -105,32 +112,19 @@ abstract public class XDialogFragment extends DialogFragment implements
 	}
 
 	@Override
-	public AQuery getAQuery() {
-
-		return null;
-	}
-
-	@Override
 	public void waitEnd() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void setData(Object object) {
+	public void setData(Serializable object) {
 		data = object;
 	}
 
 	@Override
 	final public View findViewById(int id) {
 
-		return mRootView.findViewById(id);
-	}
-
-	@Override
-	public int getLayoutId() {
-		// TODO Auto-generated method stub
-		return 0;
+		return getRootView().findViewById(id);
 	}
 
 	@Override
@@ -140,25 +134,22 @@ abstract public class XDialogFragment extends DialogFragment implements
 	}
 
 	@Override
-	public XDialogFragment waitof(String msg) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public XDialogFragment waitof() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	abstract public void initPager(Bundle savedInstanceState, Object data);
+
+	public interface onDialogListener {
+		boolean onDialogEvent(int type, XDialogFragment dialog);
+	}
 
 	public interface onDialogCallback extends OnClickListener {
 		void onDismiss();
 
 		void onTimeout();
 
+	}
+
+	/** 设置动画 */
+	protected int getAnimStyle() {
+		return R.style.anim_down_in_up_out;
 	}
 
 	public onDialogCallback getDialogCallback() {
@@ -171,8 +162,15 @@ abstract public class XDialogFragment extends DialogFragment implements
 
 	@Override
 	public XDialogFragment waitof(String msg, boolean cancel, long timeout) {
-		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public View getRootView() {
+		return mRootView;
+	}
+
+	public void setRootView(View mRootView) {
+		this.mRootView = mRootView;
 	}
 
 	abstract public static class XTimerTask implements Runnable {

@@ -7,7 +7,6 @@ import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.serializer.SimplePropertyPreFilter;
@@ -36,7 +35,7 @@ public class JsonUtils {
 		try {
 
 			t = JSON.parseObject(json, cls);
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return t;
@@ -49,7 +48,7 @@ public class JsonUtils {
 		try {
 
 			t = JSON.parseArray(json, cls);
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return t;
@@ -62,7 +61,7 @@ public class JsonUtils {
 	 *            目标对象。
 	 * @return 目标对象的 JSON 格式的字符串。
 	 */
-	public static String toJsonString(Object target) {
+	public static String toJSONString(Object target) {
 		if (target == null)
 			return EMPTY_JSON;
 		return JSON.toJSONString(target);
@@ -77,7 +76,7 @@ public class JsonUtils {
 	 *            是否格式JSON文本。
 	 * @return 目标对象的 JSON 格式的字符串。
 	 */
-	public static String toJsonString(Object target, boolean prettyFormat) {
+	public static String toJSONString(Object target, boolean prettyFormat) {
 		if (target == null)
 			return EMPTY_JSON;
 		return JSON.toJSONString(target, prettyFormat);
@@ -131,7 +130,7 @@ public class JsonUtils {
 	 *            SerializerFeature.WriteNullStringAsEmpty 字符类型字段如果为null,输出为""
 	 * @return 目标对象的 JSON 格式的字符串。
 	 */
-	public static String toJsonString(Object target,
+	public static String toJSONString(Object target,
 			SerializerFeature... feature) {
 		if (target == null)
 			return EMPTY_JSON;
@@ -146,7 +145,7 @@ public class JsonUtils {
 	 * @param properties
 	 * @return
 	 */
-	public static String toJsonString(Object target, Class<?> clazz,
+	public static String toJSONString(Object target, Class<?> clazz,
 			String... properties) {
 		if (target == null)
 			return EMPTY_JSON;
@@ -165,7 +164,7 @@ public class JsonUtils {
 	 */
 	public static Object toJson(Object target, Class<?> clazz,
 			String... properties) {
-		String obj = toJsonString(target, clazz, properties);
+		String obj = toJSONString(target, clazz, properties);
 		return JSON.parse(obj);
 	}
 

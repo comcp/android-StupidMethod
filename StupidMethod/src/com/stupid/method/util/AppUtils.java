@@ -14,6 +14,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Looper;
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.view.WindowManager;
@@ -324,6 +325,13 @@ public class AppUtils {
 			return -1;
 		}
 		return px / context.getResources().getDisplayMetrics().density;
+	}
+
+	public static String getDeviceId(Context context) {
+		String deviceId = Settings.Secure.getString(context
+				.getApplicationContext().getContentResolver(),
+				Settings.Secure.ANDROID_ID);
+		return deviceId;
 	}
 
 	/**

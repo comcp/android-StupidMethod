@@ -36,4 +36,16 @@ public class WaitDialog extends XDialogFragment {
 		return null;
 	}
 
+	@Override
+	public XDialogFragment waitof(String msg) {
+		
+		return null;
+	}
+
+	@Override
+	public XDialogFragment waitof() {
+		
+		return null;
+	}
+
 }

@@ -12,6 +12,46 @@ public class ObjectUtils {
 	}
 
 	/**
+	 * Assert a boolean expression, throwing
+	 * <code>IllegalArgumentException</code> if the test result is
+	 * <code>false</code>.
+	 * 
+	 * <pre class="code">
+	 * Assert.isTrue(i &gt; 0, &quot;The value must be greater than zero&quot;);
+	 * </pre>
+	 * 
+	 * @param expression
+	 *            a boolean expression
+	 * @param message
+	 *            the exception message to use if the assertion fails
+	 * @throws IllegalArgumentException
+	 *             if expression is <code>false</code>
+	 */
+	public static void isTrue(boolean expression, String message) {
+		if (!expression) {
+			throw new IllegalArgumentException(message);
+		}
+	}
+
+	/**
+	 * Assert a boolean expression, throwing
+	 * <code>IllegalArgumentException</code> if the test result is
+	 * <code>false</code>.
+	 * 
+	 * <pre class="code">
+	 * Assert.isTrue(i &gt; 0);
+	 * </pre>
+	 * 
+	 * @param expression
+	 *            a boolean expression
+	 * @throws IllegalArgumentException
+	 *             if expression is <code>false</code>
+	 */
+	public static void isTrue(boolean expression) {
+		isTrue(expression, "[Assertion failed] - this expression must be true");
+	}
+
+	/**
 	 * Checks that the specified object reference is not {@code null}. This
 	 * method is designed primarily for doing parameter validation in methods
 	 * and constructors, as demonstrated below: <blockquote>

@@ -1,5 +1,7 @@
 package com.stupid.method.app;
 
+import java.io.Serializable;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -15,7 +17,6 @@ import com.androidquery.AQuery;
 import com.stupid.method.BuildConfig;
 import com.stupid.method.adapter.XFragmentPagerAdapter.FragmentParam;
 import com.stupid.method.app.impl.WaitDialog;
-import com.stupid.method.util.AutoViewInit;
 import com.stupid.method.util.XLog;
 
 /**
@@ -29,6 +30,23 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 	private static long DOUBLE_CLICK_MENU = -1;
 	private AQuery $;
 	private XFragment mCurrentFragment;
+
+	/**
+	 * 设置屏幕常亮不锁屏开关
+	 * 
+	 * @param on
+	 */
+	public void setKeepScreen(boolean on) {
+		if (on) {
+			// 屏幕不锁屏, 常亮
+			getWindow()
+					.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		} else {
+			// 屏幕自动锁屏
+			getWindow().clearFlags(
+					WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		}
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +78,19 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 			}
 		});
 
+	}
+
+	/**
+	 * 获得状态栏高度
+	 * */
+	public int getStatusBarHeight() {
+		int result = -1;
+		int resourceId = getResources().getIdentifier("status_bar_height",
+				"dimen", "android");
+		if (resourceId > 0) {
+			result = getResources().getDimensionPixelSize(resourceId);
+		}
+		return result;
 	}
 
 	public void showToast(String text) {
@@ -132,7 +163,8 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 		return sb.toString();
 	}
 
-	public FragmentParam pushFragmentToBackStack(Class<?> cls, Object data) {
+	public FragmentParam pushFragmentToBackStack(
+			Class<? extends XFragment> cls, Serializable data) {
 
 		return pushFragment(cls, data, true);
 	}
@@ -148,7 +180,8 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 	 *            按返回键是否销毁
 	 * @return
 	 * **/
-	public FragmentParam pushFragment(Class<?> cls, Object data, boolean isBack) {
+	public FragmentParam pushFragment(Class<? extends XFragment> cls,
+			Serializable data, boolean isBack) {
 		FragmentParam param = new FragmentParam();
 		param.cls = cls;
 		param.data = data;
@@ -303,8 +336,4 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 		return this;
 	}
 
-	protected final void initView() {
-		AutoViewInit.initActivityView(this);
-
-	}
 }

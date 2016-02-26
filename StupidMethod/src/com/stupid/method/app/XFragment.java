@@ -1,5 +1,7 @@
 package com.stupid.method.app;
 
+import java.io.Serializable;
+
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,16 +11,18 @@ import android.view.ViewGroup;
 
 import com.androidquery.AQuery;
 import com.stupid.method.adapter.XFragmentPagerAdapter.FragmentParam;
-import com.stupid.method.util.AutoViewInit;
 
 abstract public class XFragment extends Fragment implements IXFragment {
 	static final String TAG = "XFragment";
+	static final String SAVE_SERIALIZABLE = "SAVE_SERIALIZABLE";
+	static final String SAVE_INTENT = "SAVE_INTENT";
 	private View mRootView;
-	protected Object data;
+	protected Serializable data;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 	}
 
 	@Override
@@ -32,11 +36,24 @@ abstract public class XFragment extends Fragment implements IXFragment {
 				parent = null;
 			}
 		} else {
+			if (savedInstanceState != null
+					&& savedInstanceState.getBoolean(SAVE_INTENT, false))
+				data = savedInstanceState.getSerializable(SAVE_SERIALIZABLE);
+
 			setRootView(inflater.inflate(getLayoutId(), null));
 			initPager(savedInstanceState, data);
 
 		}
 		return getRootView();
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		if (null != data) {
+			outState.putSerializable(SAVE_SERIALIZABLE, data);
+			outState.putBoolean(SAVE_INTENT, true);
+		}
+		super.onSaveInstanceState(outState);
 	}
 
 	@Override
@@ -46,7 +63,7 @@ abstract public class XFragment extends Fragment implements IXFragment {
 	}
 
 	@Override
-	public void setData(Object object) {
+	public void setData(Serializable object) {
 		this.data = object;
 	}
 
@@ -65,11 +82,13 @@ abstract public class XFragment extends Fragment implements IXFragment {
 		return mRootView;
 	}
 
-	public FragmentParam pushFragmentToBackStack(Class<?> cls, Object data) {
+	public FragmentParam pushFragmentToBackStack(
+			Class<? extends XFragment> cls, Serializable data) {
 		return getContent().pushFragment(cls, data, true);
 	}
 
-	public FragmentParam pushFragment(Class<?> cls, Object data, boolean isBack) {
+	public FragmentParam pushFragment(Class<? extends XFragment> cls,
+			Serializable data, boolean isBack) {
 
 		return getContent().pushFragment(cls, data, isBack);
 	}
@@ -150,9 +169,4 @@ abstract public class XFragment extends Fragment implements IXFragment {
 			int statusCode) {
 	}
 
-	protected final void initView() {
-
-		AutoViewInit.initFragmentView(this, getRootView());
-
-	}
 }
