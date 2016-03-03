@@ -52,6 +52,7 @@ public class AppManager extends Application {
 	private Handler mHandler = new Handler();
 
 	public final boolean post(Runnable r) {
+
 		return mHandler.post(r);
 	}
 
@@ -64,7 +65,6 @@ public class AppManager extends Application {
 	public void onCreate() {
 		super.onCreate();
 		instance = this;
-
 	}
 
 	File mRoot;
@@ -84,6 +84,10 @@ public class AppManager extends Application {
 			file.createNewFile();
 		}
 		return file;
+	}
+
+	public ExecutorService getExecutorService() {
+		return mExecutor;
 	}
 
 	public File getAppDataBaseDir() {
@@ -281,7 +285,7 @@ public class AppManager extends Application {
 		mExecutor.execute(command);
 	}
 
-	private String getKey(Object key) {
+	private static String getKey(Object key) {
 
 		if (key == null) {
 			return "";
@@ -290,9 +294,8 @@ public class AppManager extends Application {
 
 			return key.toString();
 		} else if (key instanceof Class) {
-			return ((Class) key).getSimpleName();
+			return ((Class<?>) key).getSimpleName();
 		} else
-
 			return key.getClass().getSimpleName();
 	}
 
