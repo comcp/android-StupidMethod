@@ -3,7 +3,6 @@ package com.stupid.method.util;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
-import android.webkit.WebView.FindListener;
 
 import com.stupid.method.annotation.XClick;
 import com.stupid.method.annotation.XClickCallMethod;
@@ -127,7 +125,8 @@ public class AutoViewInit {
 		Method[] methods = clz.getDeclaredMethods();
 
 		for (final Method method : methods) {
-			XClickCallMethod clickMethod = method.getAnnotation(XClickCallMethod.class);
+			XClickCallMethod clickMethod = method
+					.getAnnotation(XClickCallMethod.class);
 			if (clickMethod != null) {
 				int[] ids = clickMethod.value();
 				for (int id : ids) {

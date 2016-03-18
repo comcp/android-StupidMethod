@@ -1,6 +1,5 @@
 package com.stupid.method.util;
 
-import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.regex.Matcher;
