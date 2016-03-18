@@ -7,8 +7,10 @@ import android.view.View;
 import com.stupid.method.adapter.IXViewHolder;
 import com.stupid.method.adapter.OnClickItemListener;
 import com.stupid.method.adapter.OnLongClickItemListener;
+import com.stupid.method.util.XLog;
 
 public abstract class XHeadViewHolder implements IXViewHolder<Object> {
+	private static final String tag = "XHeadViewHolder";
 	private View mRoot;
 
 	@Override
@@ -116,6 +118,14 @@ public abstract class XHeadViewHolder implements IXViewHolder<Object> {
 			return this;
 		}
 
+	}
+
+	public XHeadViewHolder setVisibility(int visibility) {
+		if (mRoot != null)
+			mRoot.setVisibility(visibility);
+		else
+			XLog.e(tag, "XHeadViewHolder.mRoot 未初始化");
+		return this;
 	}
 
 	abstract public XHeadViewHolder setTitleText(String txt);

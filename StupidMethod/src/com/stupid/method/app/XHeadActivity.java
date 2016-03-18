@@ -1,11 +1,15 @@
 package com.stupid.method.app;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.TextView;
 
 import com.stupid.method.R;
 
@@ -14,9 +18,127 @@ public abstract class XHeadActivity extends XActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.x_head_activity);
+		setHeadViewHolder(new BaseHeadBar(), true);
 
+	}
+
+	protected class BaseHeadBar extends XHeadViewHolder {
+
+		@Override
+		public int getLayoutId() {
+
+			return R.layout.base_head;
+		}
+
+		@Override
+		public void onCreate(Context contex) {
+			overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
+			findViewById(R.id.baseHeadLeft).setOnClickListener(
+					new OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+							onBackPressed();
+						}
+					});
+		}
+
+		@Override
+		public XHeadViewHolder setBackEnabled(boolean enabled) {
+			findViewById(R.id.baseHeadLeft).setEnabled(enabled);
+			return this;
+		}
+
+		@Override
+		public XHeadViewHolder setBackImg(int resId) {
+
+			return this;
+		}
+
+		@Override
+		public XHeadViewHolder setBackText(int resId) {
+
+			((TextView) findViewById(R.id.baseHeadLeftTv)).setText(resId);
+			return this;
+		}
+
+		@Override
+		public XHeadViewHolder setBackText(String txt) {
+			((TextView) findViewById(R.id.baseHeadLeftTv)).setText(txt);
+
+			return this;
+		}
+
+		@Override
+		public XHeadViewHolder setTitleEnabled(boolean enabled) {
+			findViewById(R.id.baseHeadCenter).setEnabled(enabled);
+			return this;
+		}
+
+		@Override
+		public XHeadViewHolder setTitleImg(int resId) {
+
+			return this;
+		}
+
+		@Override
+		public XHeadViewHolder setTitleText(int resId) {
+			((TextView) findViewById(R.id.baseHeadCenterTv)).setText(resId);
+
+			return this;
+		}
+
+		@Override
+		public XHeadViewHolder setTitleText(String txt) {
+			((TextView) findViewById(R.id.baseHeadCenterTv)).setText(txt);
+			return this;
+		}
+
+		@Override
+		public XHeadViewHolder setMenuEnabled(boolean enabled) {
+			findViewById(R.id.baseHeadRight).setEnabled(enabled);
+			return this;
+		}
+
+		@Override
+		public XHeadViewHolder setMenuImg(int resId) {
+
+			return this;
+		}
+
+		@Override
+		public XHeadViewHolder setMenuText(int resId) {
+			((TextView) findViewById(R.id.baseHeadRightTv)).setText(resId);
+
+			return this;
+		}
+
+		@Override
+		public XHeadViewHolder setMenuText(String txt) {
+			((TextView) findViewById(R.id.baseHeadRightTv)).setText(txt);
+			return this;
+		}
+
+		@Override
+		public XHeadViewHolder setBackVisibility(int visibility) {
+			findViewById(R.id.baseHeadLeft).setVisibility(visibility);
+			return this;
+		}
+
+		@Override
+		public XHeadViewHolder setTitleVisibility(int visibility) {
+			findViewById(R.id.baseHeadCenter).setVisibility(visibility);
+			return this;
+		}
+
+		@Override
+		public XHeadViewHolder setMenuVisibility(int visibility) {
+			findViewById(R.id.baseHeadRight).setVisibility(visibility);
+			return this;
+		}
 	}
 
 	@SuppressLint("NewApi")
@@ -63,8 +185,9 @@ public abstract class XHeadActivity extends XActivity {
 						if (statusb > 0) {
 							View _head = headViewHolder.getView();
 							if (_head.getLayoutParams() instanceof ViewGroup.LayoutParams) {
-								ViewGroup.LayoutParams _rp = (ViewGroup.LayoutParams) _head
-										.getLayoutParams();
+								// ViewGroup.LayoutParams _rp =
+								// (ViewGroup.LayoutParams) _head
+								// .getLayoutParams();
 								viewGroup.getLayoutParams().height += statusb;
 								// _rp.height += statusb;
 								_head.setPadding(_head.getPaddingLeft(),
@@ -113,7 +236,7 @@ public abstract class XHeadActivity extends XActivity {
 		return 0;
 	}
 
-	protected XHeadViewHolder getHeadVIewHolder() {
+	protected XHeadViewHolder getHeadViewHolder() {
 		return headViewHolder;
 	}
 
