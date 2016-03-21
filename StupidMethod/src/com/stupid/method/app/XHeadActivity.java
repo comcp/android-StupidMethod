@@ -20,10 +20,24 @@ public abstract class XHeadActivity extends XActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
-		super.setContentView(R.layout.x_head_activity);
+		super.setContentView(getLayoutRes());
 		setHeadViewHolder(new BaseHeadBar(), true);
 		overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
 
+	}
+
+	protected int getLayoutRes() {
+		return R.layout.x_head_activity;
+	}
+
+	protected void setHeadViewVisibility(int visibility) {
+
+		findViewById(R.id.xHead).setVisibility(visibility);
+	}
+
+	protected int getHeadViewVisibility() {
+
+		return findViewById(R.id.xHead).getVisibility();
 	}
 
 	protected static class BaseHeadBar extends XHeadViewHolder<BaseHeadBar> {
