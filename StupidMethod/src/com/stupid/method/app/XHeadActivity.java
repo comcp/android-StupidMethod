@@ -6,6 +6,7 @@ import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.TextView;
@@ -25,7 +26,7 @@ public abstract class XHeadActivity extends XActivity {
 
 	}
 
-	protected class BaseHeadBar extends XHeadViewHolder<BaseHeadBar> {
+	protected static class BaseHeadBar extends XHeadViewHolder<BaseHeadBar> {
 
 		@Override
 		public int getLayoutId() {
@@ -130,8 +131,42 @@ public abstract class XHeadActivity extends XActivity {
 
 		@Override
 		public void onCreate(Context contex) {
-			// TODO Auto-generated method stub
 
+		}
+
+		@Override
+		public XHeadViewHolder<BaseHeadBar> setBackOnClickListener(
+				OnClickListener click) {
+
+			findViewById(R.id.baseHeadLeft).setOnClickListener(click);
+			return this;
+		}
+
+		@Override
+		public XHeadViewHolder<BaseHeadBar> setTitleOnClickListener(
+				OnClickListener click) {
+			findViewById(R.id.baseHeadCenter).setOnClickListener(click);
+			return this;
+		}
+
+		@Override
+		public XHeadViewHolder<BaseHeadBar> setMenuOnClickListener(
+				OnClickListener click) {
+			findViewById(R.id.baseHeadRight).setOnClickListener(click);
+
+			return this;
+		}
+
+		@Override
+		public XHeadViewHolder<BaseHeadBar> setBackgroundImge(int resId) {
+			getView().setBackgroundResource(resId);
+			return null;
+		}
+
+		@Override
+		public XHeadViewHolder<BaseHeadBar> setBackgroundColor(int color) {
+			getView().setBackgroundColor(color);
+			return this;
 		}
 
 	}

@@ -3,6 +3,7 @@ package com.stupid.method.app;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 
 import com.stupid.method.adapter.IXViewHolder;
 import com.stupid.method.adapter.OnClickItemListener;
@@ -37,23 +38,36 @@ public abstract class XHeadViewHolder<T extends XHeadViewHolder<?>> implements
 		return this;
 	}
 
+	abstract public XHeadViewHolder<T> setBackOnClickListener(
+			OnClickListener click);
+
+	abstract public XHeadViewHolder<T> setTitleOnClickListener(
+			OnClickListener click);
+
+	abstract public XHeadViewHolder<T> setMenuOnClickListener(
+			OnClickListener click);
+
 	abstract public XHeadViewHolder<T> setTitleText(String txt);
 
-	abstract public XHeadViewHolder<T> setTitleText(int resId);
+	abstract public XHeadViewHolder<T> setTitleText(int resid);
 
-	abstract public XHeadViewHolder<T> setTitleImg(int resId);
+	abstract public XHeadViewHolder<T> setTitleImg(int resid);
 
-	abstract public XHeadViewHolder<T> setBackImg(int resId);
+	abstract public XHeadViewHolder<T> setBackImg(int resid);
+
+	abstract public XHeadViewHolder<T> setBackgroundImge(int resid);
+
+	abstract public XHeadViewHolder<T> setBackgroundColor(int color);
 
 	abstract public XHeadViewHolder<T> setBackText(String txt);
 
-	abstract public XHeadViewHolder<T> setBackText(int resId);
+	abstract public XHeadViewHolder<T> setBackText(int resid);
 
-	abstract public XHeadViewHolder<T> setMenuText(int resId);
+	abstract public XHeadViewHolder<T> setMenuText(int resid);
 
 	abstract public XHeadViewHolder<T> setMenuText(String txt);
 
-	abstract public XHeadViewHolder<T> setMenuImg(int resId);
+	abstract public XHeadViewHolder<T> setMenuImg(int resid);
 
 	abstract public XHeadViewHolder<T> setMenuEnabled(boolean enabled);
 
@@ -71,7 +85,7 @@ public abstract class XHeadViewHolder<T extends XHeadViewHolder<?>> implements
 	@Deprecated
 	public View getView(Object arg0, int arg1, boolean arg2) {
 
-		return null;
+		return getView();
 	}
 
 	@Override
