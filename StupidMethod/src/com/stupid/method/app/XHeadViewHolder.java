@@ -9,7 +9,8 @@ import com.stupid.method.adapter.OnClickItemListener;
 import com.stupid.method.adapter.OnLongClickItemListener;
 import com.stupid.method.util.XLog;
 
-public abstract class XHeadViewHolder implements IXViewHolder<Object> {
+public abstract class XHeadViewHolder<T extends XHeadViewHolder<?>> implements
+		IXViewHolder<Object> {
 	private static final String tag = "XHeadViewHolder";
 	private View mRoot;
 
@@ -21,106 +22,14 @@ public abstract class XHeadViewHolder implements IXViewHolder<Object> {
 
 	public View findViewById(int id) {
 
-		if (mRoot == null)
+		if (mRoot == null) {
+			XLog.e(tag, "XHeadViewHolder.mRoot 未初始化");
 			return null;
+		}
 		return mRoot.findViewById(id);
 	}
 
-	public abstract static class XHeadView extends XHeadViewHolder {
-
-		@Override
-		public XHeadViewHolder setTitleText(String txt) {
-
-			return this;
-		}
-
-		@Override
-		public XHeadViewHolder setTitleText(int resId) {
-
-			return this;
-		}
-
-		@Override
-		public XHeadViewHolder setTitleImg(int resId) {
-
-			return this;
-		}
-
-		@Override
-		public XHeadViewHolder setBackImg(int resId) {
-
-			return this;
-		}
-
-		@Override
-		public XHeadViewHolder setBackText(String txt) {
-
-			return this;
-		}
-
-		@Override
-		public XHeadViewHolder setBackText(int resId) {
-
-			return this;
-		}
-
-		@Override
-		public XHeadViewHolder setMenuText(int resId) {
-
-			return this;
-		}
-
-		@Override
-		public XHeadViewHolder setMenuText(String txt) {
-
-			return this;
-		}
-
-		@Override
-		public XHeadViewHolder setMenuImg(int resId) {
-
-			return this;
-		}
-
-		@Override
-		public XHeadViewHolder setMenuEnabled(boolean enabled) {
-
-			return this;
-		}
-
-		@Override
-		public XHeadViewHolder setBackEnabled(boolean enabled) {
-
-			return this;
-		}
-
-		@Override
-		public XHeadViewHolder setTitleEnabled(boolean enabled) {
-
-			return this;
-		}
-
-		@Override
-		public XHeadViewHolder setBackVisibility(int visibility) {
-
-			return this;
-		}
-
-		@Override
-		public XHeadViewHolder setTitleVisibility(int visibility) {
-
-			return this;
-		}
-
-		@Override
-		public XHeadViewHolder setMenuVisibility(int visibility) {
-
-			return this;
-		}
-
-	}
-
-	public XHeadViewHolder setVisibility(int visibility) {
+	public XHeadViewHolder<T> setVisibility(int visibility) {
 		if (mRoot != null)
 			mRoot.setVisibility(visibility);
 		else
@@ -128,35 +37,35 @@ public abstract class XHeadViewHolder implements IXViewHolder<Object> {
 		return this;
 	}
 
-	abstract public XHeadViewHolder setTitleText(String txt);
+	abstract public XHeadViewHolder<T> setTitleText(String txt);
 
-	abstract public XHeadViewHolder setTitleText(int resId);
+	abstract public XHeadViewHolder<T> setTitleText(int resId);
 
-	abstract public XHeadViewHolder setTitleImg(int resId);
+	abstract public XHeadViewHolder<T> setTitleImg(int resId);
 
-	abstract public XHeadViewHolder setBackImg(int resId);
+	abstract public XHeadViewHolder<T> setBackImg(int resId);
 
-	abstract public XHeadViewHolder setBackText(String txt);
+	abstract public XHeadViewHolder<T> setBackText(String txt);
 
-	abstract public XHeadViewHolder setBackText(int resId);
+	abstract public XHeadViewHolder<T> setBackText(int resId);
 
-	abstract public XHeadViewHolder setMenuText(int resId);
+	abstract public XHeadViewHolder<T> setMenuText(int resId);
 
-	abstract public XHeadViewHolder setMenuText(String txt);
+	abstract public XHeadViewHolder<T> setMenuText(String txt);
 
-	abstract public XHeadViewHolder setMenuImg(int resId);
+	abstract public XHeadViewHolder<T> setMenuImg(int resId);
 
-	abstract public XHeadViewHolder setMenuEnabled(boolean enabled);
+	abstract public XHeadViewHolder<T> setMenuEnabled(boolean enabled);
 
-	abstract public XHeadViewHolder setBackEnabled(boolean enabled);
+	abstract public XHeadViewHolder<T> setBackEnabled(boolean enabled);
 
-	abstract public XHeadViewHolder setTitleEnabled(boolean enabled);
+	abstract public XHeadViewHolder<T> setTitleEnabled(boolean enabled);
 
-	abstract public XHeadViewHolder setBackVisibility(int visibility);
+	abstract public XHeadViewHolder<T> setBackVisibility(int visibility);
 
-	abstract public XHeadViewHolder setTitleVisibility(int visibility);
+	abstract public XHeadViewHolder<T> setTitleVisibility(int visibility);
 
-	abstract public XHeadViewHolder setMenuVisibility(int visibility);
+	abstract public XHeadViewHolder<T> setMenuVisibility(int visibility);
 
 	@Override
 	@Deprecated
@@ -166,25 +75,32 @@ public abstract class XHeadViewHolder implements IXViewHolder<Object> {
 	}
 
 	@Override
-	public abstract void onCreate(Context contex);
+	abstract public void onCreate(Context contex);
 
+	@Deprecated
 	@Override
 	public void onDestory(int arg0, int arg1) {
 	}
 
 	@Override
-	public View setInflater(LayoutInflater arg0) {
+	public View setInflater(LayoutInflater inflater) {
 
-		return mRoot = arg0.inflate(getLayoutId(), null);
+		return mRoot = inflater.inflate(getLayoutId(), null);
 	}
 
+	@Deprecated
 	@Override
 	public void setOnClickItemListener(OnClickItemListener arg0) {
 	}
 
+	@Deprecated
 	@Override
 	public void setOnLongClickItemListener(OnLongClickItemListener arg0) {
 
+	}
+
+	public T getTemplte() {
+		return (T) this;
 	}
 
 }
