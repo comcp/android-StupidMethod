@@ -1,6 +1,6 @@
 package com.stupid.method.app;
 
-import java.util.List;
+import java.io.Serializable;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -14,13 +14,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.androidquery.AQuery;
-import com.androidquery.callback.AjaxStatus;
 import com.stupid.method.BuildConfig;
 import com.stupid.method.adapter.XFragmentPagerAdapter.FragmentParam;
-import com.stupid.method.androidquery.expansion.AQCallbackString;
 import com.stupid.method.app.impl.WaitDialog;
-import com.stupid.method.db.bean.TmpData;
-import com.stupid.method.util.MapUtil;
 import com.stupid.method.util.XLog;
 
 /**
@@ -34,6 +30,23 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 	private static long DOUBLE_CLICK_MENU = -1;
 	private AQuery $;
 	private XFragment mCurrentFragment;
+
+	/**
+	 * 设置屏幕常亮不锁屏开关
+	 * 
+	 * @param on
+	 */
+	public void setKeepScreen(boolean on) {
+		if (on) {
+			// 屏幕不锁屏, 常亮
+			getWindow()
+					.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		} else {
+			// 屏幕自动锁屏
+			getWindow().clearFlags(
+					WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		}
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,20 +67,6 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 		return $;
 	}
 
-	/**
-	 * 从服务器请求数据
-	 * 
-	 * @回调:{@link XActivity#callback(String, String, AjaxStatus, int)}
-	 * 
-	 * **/
-	public AQuery ajax(int CallBack_id, String url, MapUtil<String, ?> params) {
-
-		return getAQuery().ajax(url,
-				params == null ? null : params.getHashMap(), String.class,
-				new AQCallbackString(CallBack_id, this));
-
-	}
-
 	public void showToast(final String text, final int duration) {
 
 		runOnUiThread(new Runnable() {
@@ -79,6 +78,19 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 			}
 		});
 
+	}
+
+	/**
+	 * 获得状态栏高度
+	 * */
+	public int getStatusBarHeight() {
+		int result = -1;
+		int resourceId = getResources().getIdentifier("status_bar_height",
+				"dimen", "android");
+		if (resourceId > 0) {
+			result = getResources().getDimensionPixelSize(resourceId);
+		}
+		return result;
 	}
 
 	public void showToast(String text) {
@@ -96,27 +108,6 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 
 	}
 
-	/**
-	 * @param url
-	 *            请求的URL
-	 * @param callback_data
-	 *            从服务器请求回来的数据
-	 * @param status
-	 *            aquery 原始数据
-	 * @param CallBack_id
-	 *            回调id
-	 * ***/
-	@Override
-	public void callback(String url, String callback_data, AjaxStatus status,
-			int CallBack_id) {
-		if (AppConfig.DEBUG && status.getCode() != 200) {
-			XLog.d(tag, status.getMessage());
-			XLog.d(tag, status.getError());
-			XLog.d(tag, url);
-
-		}
-	}
-
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 
 		if (AppConfig.DEBUG && keyCode == KeyEvent.KEYCODE_MENU) {
@@ -128,28 +119,10 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 		return super.onKeyDown(keyCode, event);
 	}
 
-	public void setTmpData(String key, String value) {
-
-		AppManager.getInstance().setTmpData(key, value);
-
-	}
-
-	public TmpData getTmpData(String key) {
-
-		return AppManager.getInstance().getTmpData(key);
-
-	}
-
 	@Override
 	protected void onStop() {
 
 		super.onStop();
-	}
-
-	public List<TmpData> getTmpDataAll() {
-
-		return AppManager.getInstance().getTmpDataAll();
-
 	}
 
 	/** 隐藏键盘 **/
@@ -190,7 +163,8 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 		return sb.toString();
 	}
 
-	public FragmentParam pushFragmentToBackStack(Class<?> cls, Object data) {
+	public FragmentParam pushFragmentToBackStack(
+			Class<? extends XFragment> cls, Serializable data) {
 
 		return pushFragment(cls, data, true);
 	}
@@ -206,7 +180,8 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 	 *            按返回键是否销毁
 	 * @return
 	 * **/
-	public FragmentParam pushFragment(Class<?> cls, Object data, boolean isBack) {
+	public FragmentParam pushFragment(Class<? extends XFragment> cls,
+			Serializable data, boolean isBack) {
 		FragmentParam param = new FragmentParam();
 		param.cls = cls;
 		param.data = data;
@@ -350,4 +325,15 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 			xdialog.dismiss();
 
 	}
+
+	@Override
+	public void onServerResult(int resultCode, String data, boolean state,
+			int statusCode) {
+	}
+
+	public XActivity self() {
+
+		return this;
+	}
+
 }

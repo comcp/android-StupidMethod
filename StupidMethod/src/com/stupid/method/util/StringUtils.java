@@ -16,6 +16,120 @@ public class StringUtils {
 		throw new AssertionError();
 	}
 
+	public static Integer str2Int(String string) {
+		return str2Int(string, 0);
+	}
+
+	public static long str2Long(String string, long defValue) {
+		long res = defValue;
+		try {
+			res = Integer.parseInt(string);
+		} catch (NumberFormatException e) {
+
+			XLog.e("StringUtils", string + " 转 long 失败  ", e);
+
+		}
+		return res;
+	}
+
+	public static Integer str2Int(String string, int defValue) {
+		Integer res = defValue;
+		try {
+			res = Integer.valueOf(string);
+		} catch (NumberFormatException e) {
+
+			XLog.e("StringUtils", string + " 转 int 失败  ", e);
+
+		}
+		return res;
+
+	}
+
+	public static String join(CharSequence delimiter, Object element,
+			Object... elements) {
+		ObjectUtils.requireNonNull(delimiter);
+		ObjectUtils.requireNonNull(element);
+		// Number of elements not likely worth Arrays.stream overhead.
+		StringJoiner joiner = new StringJoiner(delimiter);
+		if (elements != null)
+			for (Object cs : elements) {
+				joiner.add(cs.toString());
+			}
+
+		return joiner.toString();
+	}
+
+	public static String join(CharSequence delimiter, CharSequence... elements) {
+		ObjectUtils.requireNonNull(delimiter);
+		ObjectUtils.requireNonNull(elements);
+		// Number of elements not likely worth Arrays.stream overhead.
+		StringJoiner joiner = new StringJoiner(delimiter);
+		for (CharSequence cs : elements) {
+			joiner.add(cs);
+		}
+		return joiner.toString();
+	}
+
+	/**
+	 * Returns a new {@code String} composed of copies of the
+	 * {@code CharSequence elements} joined together with a copy of the
+	 * specified {@code delimiter}.
+	 * 
+	 * <blockquote>For example,
+	 * 
+	 * <pre>
+	 * {
+	 * 	&#064;code
+	 * 	List&lt;String&gt; strings = new LinkedList&lt;&gt;();
+	 * 	strings.add(&quot;Java&quot;);
+	 * 	strings.add(&quot;is&quot;);
+	 * 	strings.add(&quot;cool&quot;);
+	 * 	String message = String.join(&quot; &quot;, strings);
+	 * 	// message returned is: &quot;Java is cool&quot;
+	 * 
+	 * 	Set&lt;String&gt; strings = new LinkedHashSet&lt;&gt;();
+	 * 	strings.add(&quot;Java&quot;);
+	 * 	strings.add(&quot;is&quot;);
+	 * 	strings.add(&quot;very&quot;);
+	 * 	strings.add(&quot;cool&quot;);
+	 * 	String message = String.join(&quot;-&quot;, strings);
+	 * 	// message returned is: &quot;Java-is-very-cool&quot;
+	 * }
+	 * </pre>
+	 * 
+	 * </blockquote>
+	 * 
+	 * Note that if an individual element is {@code null}, then {@code "null"}
+	 * is added.
+	 * 
+	 * @param delimiter
+	 *            a sequence of characters that is used to separate each of the
+	 *            {@code elements} in the resulting {@code String}
+	 * @param elements
+	 *            an {@code Iterable} that will have its {@code elements} joined
+	 *            together.
+	 * 
+	 * @return a new {@code String} that is composed from the {@code elements}
+	 *         argument
+	 * 
+	 * @throws NullPointerException
+	 *             If {@code delimiter} or {@code elements} is {@code null}
+	 * 
+	 * @see #join(CharSequence,CharSequence...)
+	 * @see java.util.StringJoiner
+	 * @since 1.8
+	 */
+	public static String join(CharSequence delimiter,
+			Iterable<? extends CharSequence> elements) {
+		ObjectUtils.requireNonNull(delimiter);
+		ObjectUtils.requireNonNull(elements);
+		StringJoiner joiner = new StringJoiner(delimiter);
+		for (CharSequence cs : elements) {
+			joiner.add(cs);
+		}
+		return joiner.toString();
+	}
+
 	/**
 	 * is null or its length is 0 or it is made by space
 	 * 

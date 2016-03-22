@@ -1,17 +1,15 @@
 package com.stupid.method.app;
 
 import com.androidquery.AQuery;
-import com.stupid.method.androidquery.expansion.AQCallbackListener;
-import com.stupid.method.util.MapUtil;
+import com.stupid.method.http.IXHttp;
+import com.stupid.method.http.IXServerResultListener;
 
 /**
  * Activity 需要实现的方法,都在这里定义好之后,去实现 <br>
  * 为了方便查漏
  * 
  * ***/
-public interface IXActivity extends AQCallbackListener {
-
-	AQuery ajax(int CallBack_id, String url, MapUtil<String, ?> params);
+public interface IXActivity extends IXServerResultListener {
 
 	void showToast(String text, int duration);
 
@@ -40,5 +38,7 @@ public interface IXActivity extends AQCallbackListener {
 	XDialogFragment waitof();
 
 	void waitEnd();
+
+	IXHttp getHttp();
 
 }

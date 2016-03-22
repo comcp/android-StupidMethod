@@ -1,12 +1,11 @@
 package com.stupid.method.app;
 
 import java.io.File;
-import java.lang.reflect.Field;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -24,85 +23,144 @@ import android.graphics.Point;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Environment;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
 import com.alibaba.fastjson.JSON;
-import com.androidquery.callback.BitmapAjaxCallback;
-import com.stupid.method.db.bean.TmpData;
-import com.stupid.method.db.dao.DaoMaster;
-import com.stupid.method.db.dao.DaoSession;
-import com.stupid.method.util.StringUtils;
+import com.stupid.method.util.FileUtils;
 import com.stupid.method.util.XLog;
 
 public class AppManager extends Application {
 
 	public static final String tag = "AppManager";
 	public static final String DB_NAME = "TmpData";
-	public static String root;
 	// app 独立命名空间（文件存储等等）
-	public static String NAMESPACE = null;
-	public static String DIR_FILE = "%s/%sfile" + File.separator;
-	public static String DIR_PICS = "%s/%spics" + File.separator;
-	public static String DIR_THUMB = "%s/%sthumb" + File.separator;
-	public static String SIR_MEDIAS = "%/%ssmedias" + File.separator;
-	public static String DIR_TEMP = "%/%sstemp" + File.separator;
-	public static String DIR_LOGS = "%s/%slogs" + File.separator;
+	// public static String NAMESPACE = null;
+	// public static String DIR_FILE = "%s%s/file" + File.separator;
+	// public static String DIR_PICS = "%s%s/pics" + File.separator;
+	// public static String DIR_THUMB = "%s%s/thumb" + File.separator;
+	// public static String SIR_MEDIAS = "%s%s/smedias" + File.separator;
+	// public static String DIR_TEMP = "%s%s/stemp" + File.separator;
+	// public static String DIR_LOGS = "%s%s/logs" + File.separator;
 
 	private static AppManager instance = null;
 	private Point screenSize;
 	private int versionCode = -1;
 	private SharedPreferences sharedPreferences;
-	private ExecutorService mExecutor = Executors.newFixedThreadPool(5);
+	private ExecutorService mExecutor = Executors.newFixedThreadPool(3);
+	private Handler mHandler = new Handler();
 
-	private static DaoMaster daoMaster;
-	private static DaoSession daoSession;
+	public final boolean post(Runnable r) {
+
+		return mHandler.post(r);
+	}
+
+	public String getNameSpace() {
+
+		return getPackageName();
+	}
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		root = getPath() + "/Android/data/".replace("/", File.separator);
-		if (StringUtils.isBlank(NAMESPACE))
-			NAMESPACE = getPackageName();
 		instance = this;
+	}
+
+	File mRoot;
+
+	public File getAppCacheDir() {
 		initDir();
+		return mRoot;
 	}
 
-	public void initDir() {
-		  
-		
-		
-		DIR_FILE = String.format(DIR_FILE, root, NAMESPACE);
-		DIR_PICS = String.format(DIR_PICS, root, NAMESPACE);
-		DIR_THUMB = String.format(DIR_THUMB, root, NAMESPACE);
-		SIR_MEDIAS = String.format(SIR_MEDIAS, root, NAMESPACE);
-		DIR_TEMP = String.format(DIR_TEMP, root, NAMESPACE);
-		DIR_LOGS = String.format(DIR_LOGS, root, NAMESPACE);
-		File file = new File(DIR_FILE);
-		if (!file.exists())
-			file.mkdirs();
-		file = new File(DIR_LOGS);
-		if (!file.exists())
-			file.mkdirs();
+	public File getOrCreateDataBase(String dbname) throws IOException {
 
-		file = new File(DIR_PICS);
-		if (!file.exists())
+		File file = new File(getAppCacheDir(), dbname);
+		if (file.getParentFile().exists()) {
+			file.getParentFile().mkdirs();
+		}
+		if (file.exists()) {
+			file.createNewFile();
+		}
+		return file;
+	}
+
+	public ExecutorService getExecutorService() {
+		return mExecutor;
+	}
+
+	public File getAppDataBaseDir() {
+		File file = new File(getAppCacheDir(), "DBS");
+		if (!file.exists()) {
 			file.mkdirs();
-		file = new File(DIR_THUMB);
-		if (!file.exists())
+		}
+		return file;
+	}
+
+	public File getAppImgDir() {
+		File file = new File(getAppCacheDir(), "IMGS");
+		if (!file.exists()) {
 			file.mkdirs();
-		file = new File(SIR_MEDIAS);
-		if (!file.exists())
-			file.mkdirs();
-		file = new File(DIR_TEMP);
-		if (!file.exists())
-			file.mkdirs();
+		}
+		return file;
 
 	}
 
-	@Override
-	public void onTerminate() {
-		super.onTerminate();
+	public File getAppFileDir() {
+		File file = new File(getAppCacheDir(), "FILES");
+		if (!file.exists()) {
+			file.mkdirs();
+		}
+		return file;
+
+	}
+
+	public File getAppLogDir() {
+		File file = new File(getAppCacheDir(), "LOGS");
+		if (!file.exists()) {
+			file.mkdirs();
+		}
+		return file;
+
+	}
+
+	private synchronized void initDir() {
+
+		if (mRoot == null) {
+			File path = getPath();
+			File root = new File(FileUtils.join(path.getAbsolutePath(),
+					"Android", "Data", getNameSpace()));
+			if (!root.exists()) {
+				root.mkdirs();
+			}
+			mRoot = root;
+		}
+		// DIR_FILE = String.format(DIR_FILE, root, NAMESPACE);
+		// DIR_PICS = String.format(DIR_PICS, root, NAMESPACE);
+		// DIR_THUMB = String.format(DIR_THUMB, root, NAMESPACE);
+		// SIR_MEDIAS = String.format(SIR_MEDIAS, root, NAMESPACE);
+		// DIR_TEMP = String.format(DIR_TEMP, root, NAMESPACE);
+		// DIR_LOGS = String.format(DIR_LOGS, root, NAMESPACE);
+		// File file = new File(DIR_FILE);
+		// if (!file.exists())
+		// file.mkdirs();
+		// file = new File(DIR_LOGS);
+		// if (!file.exists())
+		// file.mkdirs();
+		//
+		// file = new File(DIR_PICS);
+		// if (!file.exists())
+		// file.mkdirs();
+		// file = new File(DIR_THUMB);
+		// if (!file.exists())
+		// file.mkdirs();
+		// file = new File(SIR_MEDIAS);
+		// if (!file.exists())
+		// file.mkdirs();
+		// file = new File(DIR_TEMP);
+		// if (!file.exists())
+		// file.mkdirs();
 
 	}
 
@@ -160,71 +218,6 @@ public class AppManager extends Application {
 			screenSize = new Point(dm.widthPixels, dm.heightPixels);
 		}
 		return screenSize;
-	}
-
-	/**
-	 * DaoMaster
-	 * 
-	 * @param context
-	 * @return
-	 */
-	public static DaoMaster getDaoMaster(Context context) {
-		if (daoMaster == null) {
-			DaoMaster.OpenHelper helper = new DaoMaster.DevOpenHelper(context,
-					DB_NAME, null);
-			daoMaster = new DaoMaster(helper.getWritableDatabase());
-		}
-		return daoMaster;
-	}
-
-	/**
-	 * @DaoSession
-	 * 
-	 * @param context
-	 * @return
-	 */
-	public static DaoSession getDaoSession(Context context) {
-		if (daoSession == null) {
-			if (daoMaster == null) {
-				daoMaster = getDaoMaster(context);
-			}
-			daoSession = daoMaster.newSession();
-		}
-		return daoSession;
-	}
-
-	public void setTmpData(String key, String value) {
-
-		getDaoSession(this).getTmpDataDao().deleteByKey(key);
-		getDaoSession(this).getTmpDataDao().insert(
-				new TmpData(key, value, new Date()));
-
-	}
-
-	public TmpData getTmpData(String key) {
-
-		List<TmpData> l = getDaoSession(this).getTmpDataDao().queryRaw(
-				" where key=?", key);
-
-		return l.size() > 0 ? l.get(0) : null;
-
-	}
-
-	public List<TmpData> getTmpDataAll() {
-
-		List<TmpData> l = getDaoSession(this).getTmpDataDao().queryBuilder()
-				.list();
-
-		return l;
-
-	}
-
-	@Override
-	public void onLowMemory() {
-		// clear all memory cached images when system is in low memory
-		// note that you can configure the max image cache count, see
-		// CONFIGURATION
-		BitmapAjaxCallback.clearCache();
 	}
 
 	/**
@@ -292,7 +285,7 @@ public class AppManager extends Application {
 		mExecutor.execute(command);
 	}
 
-	private String getKey(Object key) {
+	private static String getKey(Object key) {
 
 		if (key == null) {
 			return "";
@@ -301,9 +294,8 @@ public class AppManager extends Application {
 
 			return key.toString();
 		} else if (key instanceof Class) {
-			return ((Class) key).getSimpleName();
+			return ((Class<?>) key).getSimpleName();
 		} else
-
 			return key.getClass().getSimpleName();
 	}
 
@@ -380,7 +372,7 @@ public class AppManager extends Application {
 		this.sharedPreferences = sharedPreferences;
 	}
 
-	public String getPath() {
+	public File getPath() {
 		File sdDir = null;
 		boolean sdCardExist = Environment.getExternalStorageState().equals(
 				android.os.Environment.MEDIA_MOUNTED);
@@ -393,8 +385,17 @@ public class AppManager extends Application {
 			sdDir = getExternalCacheDir();
 		}
 		if (sdDir != null)
-			return sdDir.getAbsolutePath();
+			return sdDir;
 		else
-			return getCacheDir().getAbsolutePath();
+			return getCacheDir();
 	}
+
+	@Override
+	public void onLowMemory() {
+		// clear all memory cached images when system is in low memory
+		// note that you can configure the max image cache count, see
+		// CONFIGURATION
+		com.androidquery.callback.BitmapAjaxCallback.clearCache();
+	}
+
 }

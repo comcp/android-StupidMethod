@@ -1,5 +1,6 @@
 package com.stupid.method.adapter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +18,7 @@ public class XFragmentPagerAdapter extends FragmentPagerAdapter {
 	private boolean isInfiniteLoop = true;
 
 	public XFragmentPagerAdapter(XActivity activity,
-			List<Class<? extends XFragment>> fragments) {
+			Class<? extends XFragment>... fragments) {
 		super(activity.getSupportFragmentManager());
 		mFragments = new ArrayList<XFragmentPagerAdapter.FragmentParam>();
 		FragmentParam param = null;
@@ -29,13 +30,25 @@ public class XFragmentPagerAdapter extends FragmentPagerAdapter {
 
 	}
 
-	public XFragmentPagerAdapter(XActivity activity,
-			Class<? extends XFragment>... xfClasses) {
-		this(activity, Arrays.asList(xfClasses));
+	public XFragmentPagerAdapter add(FragmentParam object) {
+		mFragments.add(object);
+
+		return this;
+	}
+
+	public XFragmentPagerAdapter remove(int idex) {
+
+		mFragments.remove(idex);
+
+		return this;
+	}
+
+	public XFragmentPagerAdapter(XActivity activity, FragmentParam... params) {
+		this(activity, Arrays.asList(params));
 	}
 
 	public XFragmentPagerAdapter(XActivity activity,
-			List<FragmentParam> fragments, int i) {
+			List<FragmentParam> fragments) {
 		super(activity.getSupportFragmentManager());
 		mFragments = fragments;
 	}
@@ -65,8 +78,8 @@ public class XFragmentPagerAdapter extends FragmentPagerAdapter {
 
 	public static class FragmentParam {
 		public XFragment fragment;
-		public Class<?> cls;
-		public Object data;
+		public Class<? extends XFragment> cls;
+		public Serializable data;
 
 		public boolean isBack = false;
 		public String fragmentTag;

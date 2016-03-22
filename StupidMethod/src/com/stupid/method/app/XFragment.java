@@ -1,5 +1,7 @@
 package com.stupid.method.app;
 
+import java.io.Serializable;
+
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,46 +10,50 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.androidquery.AQuery;
-import com.androidquery.callback.AjaxStatus;
 import com.stupid.method.adapter.XFragmentPagerAdapter.FragmentParam;
-import com.stupid.method.androidquery.expansion.AQCallbackString;
-import com.stupid.method.util.MapUtil;
-import com.stupid.method.util.XLog;
 
 abstract public class XFragment extends Fragment implements IXFragment {
 	static final String TAG = "XFragment";
+	static final String SAVE_SERIALIZABLE = "SAVE_SERIALIZABLE";
+	static final String SAVE_INTENT = "SAVE_INTENT";
 	private View mRootView;
-	protected Object data;
+	protected Serializable data;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater,
 			@Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-		if (null != mRootView) {
-			ViewGroup parent = (ViewGroup) mRootView.getParent();
+		if (null != getRootView()) {
+			ViewGroup parent = (ViewGroup) getRootView().getParent();
 			if (null != parent) {
-				parent.removeView(mRootView);
+				parent.removeView(getRootView());
 				parent = null;
 			}
 		} else {
-			mRootView = inflater.inflate(getLayoutId(), null);
+			if (savedInstanceState != null
+					&& savedInstanceState.getBoolean(SAVE_INTENT, false))
+				data = savedInstanceState.getSerializable(SAVE_SERIALIZABLE);
+
+			setRootView(inflater.inflate(getLayoutId(), null));
 			initPager(savedInstanceState, data);
 
 		}
-		return mRootView;
+		return getRootView();
 	}
 
-	public AQuery ajax(int CallBack_id, String url, MapUtil<String, ?> params) {
-
-		return getContent().getAQuery().ajax(url,
-				params == null ? null : params.getHashMap(), String.class,
-				new AQCallbackString(CallBack_id, this));
-
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		if (null != data) {
+			outState.putSerializable(SAVE_SERIALIZABLE, data);
+			outState.putBoolean(SAVE_INTENT, true);
+		}
+		super.onSaveInstanceState(outState);
 	}
 
 	@Override
@@ -57,14 +63,14 @@ abstract public class XFragment extends Fragment implements IXFragment {
 	}
 
 	@Override
-	public void setData(Object object) {
+	public void setData(Serializable object) {
 		this.data = object;
 	}
 
 	@Override
 	public View findViewById(int id) {
 
-		return mRootView.findViewById(id);
+		return getRootView().findViewById(id);
 	}
 
 	public XActivity getContent() {
@@ -76,22 +82,13 @@ abstract public class XFragment extends Fragment implements IXFragment {
 		return mRootView;
 	}
 
-	@Override
-	public void callback(String url, String callback_data, AjaxStatus status,
-			int CallBack_id) {
-		if (AppConfig.DEBUG && status.getCode() != 200) {
-			XLog.d(TAG, status.getMessage());
-			XLog.d(TAG, status.getError());
-			XLog.d(TAG, url);
-
-		}
-	}
-
-	public FragmentParam pushFragmentToBackStack(Class<?> cls, Object data) {
+	public FragmentParam pushFragmentToBackStack(
+			Class<? extends XFragment> cls, Serializable data) {
 		return getContent().pushFragment(cls, data, true);
 	}
 
-	public FragmentParam pushFragment(Class<?> cls, Object data, boolean isBack) {
+	public FragmentParam pushFragment(Class<? extends XFragment> cls,
+			Serializable data, boolean isBack) {
 
 		return getContent().pushFragment(cls, data, isBack);
 	}
@@ -161,6 +158,15 @@ abstract public class XFragment extends Fragment implements IXFragment {
 			return getContent().waitof(msg, cancel, timeout);
 		} else
 			return null;
+	}
+
+	public void setRootView(View mRootView) {
+		this.mRootView = mRootView;
+	}
+
+	@Override
+	public void onServerResult(int resultCode, String data, boolean state,
+			int statusCode) {
 	}
 
 }

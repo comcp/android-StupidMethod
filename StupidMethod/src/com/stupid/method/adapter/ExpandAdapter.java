@@ -113,7 +113,7 @@ public class ExpandAdapter extends BaseExpandableListAdapter {
 		}
 
 		return view.getView(groups.get(groupPosition).setExpanded(isExpanded),
-				groupPosition);
+				groupPosition, isOnScrolling());
 	}
 
 	/** 绘制子节点 **/
@@ -142,6 +142,33 @@ public class ExpandAdapter extends BaseExpandableListAdapter {
 		node.setParentID(groupPosition);
 		node.setLastChild(isLastChild);
 
-		return view.getView(node, groupPosition);
+		return view.getView(node, groupPosition, isOnScrolling());
 	}
+
+	public void pause() {
+		setOnScrolling(true);
+	}
+
+	public void resume() {
+		setOnScrolling(false);
+		notifyDataSetChanged();
+
+	}
+
+	/**
+	 * @return the onScrolling
+	 */
+	public boolean isOnScrolling() {
+		return onScrolling;
+	}
+
+	/**
+	 * @param onScrolling
+	 *            the onScrolling to set
+	 */
+	public void setOnScrolling(boolean onScrolling) {
+		this.onScrolling = onScrolling;
+	}
+
+	private boolean onScrolling;
 }
