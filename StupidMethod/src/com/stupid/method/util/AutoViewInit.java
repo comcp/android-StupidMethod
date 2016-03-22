@@ -18,7 +18,7 @@ import com.stupid.method.annotation.XLongClick;
 import com.stupid.method.annotation.XViewById;
 
 public class AutoViewInit {
-	private final static String ID = "id";
+	private final static String ID = "id", tag = "AutoViewInit";
 
 	public static void initObjectView(Object obj, View root) {
 
@@ -113,16 +113,9 @@ public class AutoViewInit {
 
 	}
 
-	private static void initObject(Object target, Object dataFrom,
+	private static void setMethod(Object target, Object dataFrom,
 			Context context, Resources res, OnClickListener onclick,
-			OnLongClickListener onlongClick) {
-		ObjectUtils.requireNonNull(dataFrom);
-		ObjectUtils.requireNonNull(target);
-		ObjectUtils.requireNonNull(res);
-
-		Class<?> clz = target.getClass();
-		Field[] fields = clz.getDeclaredFields();
-		Method[] methods = clz.getDeclaredMethods();
+			OnLongClickListener onlongClick, Method[] methods) {
 
 		for (final Method method : methods) {
 			XClickCallMethod clickMethod = method
@@ -176,6 +169,12 @@ public class AutoViewInit {
 
 		}
 
+	}
+
+	private static void setFileds(Object target, Object dataFrom,
+			Context context, Resources res, OnClickListener onclick,
+			OnLongClickListener onlongClick, Field[] fields) {
+		Class<?> clz = target.getClass();
 		for (Field field : fields) {
 			XViewById xid = field.getAnnotation(XViewById.class);
 			if (null != xid) {
@@ -186,10 +185,11 @@ public class AutoViewInit {
 				}
 
 				field.setAccessible(true);
+
 				try {
 					Object data = field.get(target);
 					if (data != null) {
-						XLog.d(clz.getSimpleName(),
+						XLog.d(tag,
 								String.format(
 										"[%s.%s]已被赋值,结束本次赋值,onclick,onlongclick 如果没有赋值也会停止赋值",
 										clz.getSimpleName(), field.getName()));
@@ -239,7 +239,6 @@ public class AutoViewInit {
 								e);
 					}
 				} else {
-
 					XLog.i(clz.getSimpleName(), String.format(
 							" id %s 在 %s 未找到 ", field.getName(),
 							dataFrom.toString()));
@@ -247,6 +246,28 @@ public class AutoViewInit {
 			}
 
 		}
+	}
+
+	private static void initObject(Object target, Object dataFrom,
+			Context context, Resources res, OnClickListener onclick,
+			OnLongClickListener onlongClick) {
+		ObjectUtils.requireNonNull(dataFrom);
+		ObjectUtils.requireNonNull(target);
+		ObjectUtils.requireNonNull(res);
+
+		Class<?> clz = target.getClass();
+
+		setMethod(target, dataFrom, context, res, onclick, onlongClick,
+				clz.getMethods());
+		setMethod(target, dataFrom, context, res, onclick, onlongClick,
+				clz.getDeclaredMethods());
+
+		setFileds(target, dataFrom, context, res, onclick, onlongClick,
+				clz.getDeclaredFields());
+
+		setFileds(target, dataFrom, context, res, onclick, onlongClick,
+				clz.getFields());
+
 	}
 
 	public static Object invoke(Method met, Object receiver, Object... args) {
