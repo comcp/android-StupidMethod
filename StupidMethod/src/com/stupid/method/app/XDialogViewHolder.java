@@ -28,6 +28,8 @@ public abstract class XDialogViewHolder implements IXDialogViewHolder {
 	protected LayoutInflater inflater;
 	protected Context mContext;
 	protected Object mData;
+	int PARAMS_WIDTH = RelativeLayout.LayoutParams.MATCH_PARENT;
+	int PARAMS_HEIGHT = RelativeLayout.LayoutParams.WRAP_CONTENT;
 
 	protected static class Builder {
 		protected XDialog.Builder builder;
@@ -141,14 +143,18 @@ public abstract class XDialogViewHolder implements IXDialogViewHolder {
 
 			};
 
-			layout.addView(inflater.inflate(getLayoutId(), null),
-					RelativeLayout.LayoutParams.MATCH_PARENT,
-					RelativeLayout.LayoutParams.WRAP_CONTENT);
+			layout.addView(inflater.inflate(getLayoutId(), null), PARAMS_WIDTH,
+					PARAMS_HEIGHT);
 
 			mRoot = layout;
 
 		}
 		return mRoot;
+	}
+
+	public void setLayoutParams(int width, int height) {
+		this.PARAMS_HEIGHT = height;
+		this.PARAMS_WIDTH = width;
 	}
 
 	@Override
