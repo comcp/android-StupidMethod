@@ -47,7 +47,7 @@ public abstract class XHeadViewHolder<T extends XHeadViewHolder<?>> implements
 	abstract public XHeadViewHolder<T> setMenuOnClickListener(
 			OnClickListener click);
 
-	abstract public XHeadViewHolder<T> setTitleText(String txt);
+	abstract public XHeadViewHolder<T> setTitleText(CharSequence txt);
 
 	abstract public XHeadViewHolder<T> setTitleText(int resid);
 
@@ -59,13 +59,13 @@ public abstract class XHeadViewHolder<T extends XHeadViewHolder<?>> implements
 
 	abstract public XHeadViewHolder<T> setBackgroundColor(int color);
 
-	abstract public XHeadViewHolder<T> setBackText(String txt);
+	abstract public XHeadViewHolder<T> setBackText(CharSequence txt);
 
 	abstract public XHeadViewHolder<T> setBackText(int resid);
 
 	abstract public XHeadViewHolder<T> setMenuText(int resid);
 
-	abstract public XHeadViewHolder<T> setMenuText(String txt);
+	abstract public XHeadViewHolder<T> setMenuText(CharSequence txt);
 
 	abstract public XHeadViewHolder<T> setMenuImg(int resid);
 

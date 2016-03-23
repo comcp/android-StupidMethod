@@ -14,6 +14,171 @@ import android.widget.TextView;
 import com.stupid.method.R;
 
 public abstract class XHeadActivity extends XActivity {
+
+	public abstract static class HeadActivityImpl extends XHeadActivity {
+		@Override
+		protected void onCreate(Bundle savedInstanceState) {
+			super.onCreate(savedInstanceState);
+			setHeadViewHolder(getHeadView(), true);
+
+		}
+
+		protected XHeadViewHolder getHeadView() {
+			if (getHeadViewHolder() == null)
+				return new BaseHeadBar();
+			else
+				return getHeadViewHolder();
+		}
+
+		protected class BaseHeadBar extends XHeadViewHolder<BaseHeadBar> {
+
+			@Override
+			public int getLayoutId() {
+
+				return R.layout.base_head;
+			}
+
+			@Override
+			public XHeadViewHolder<BaseHeadBar> setBackEnabled(boolean enabled) {
+				findViewById(R.id.baseHeadLeft).setEnabled(enabled);
+				return this;
+			}
+
+			@Override
+			public XHeadViewHolder<BaseHeadBar> setBackImg(int resId) {
+				((TextView) findViewById(R.id.baseHeadLeftTv))
+						.setCompoundDrawablesWithIntrinsicBounds(resId, 0, 0, 0);
+				return this;
+			}
+
+			@Override
+			public XHeadViewHolder<BaseHeadBar> setBackText(int resId) {
+
+				((TextView) findViewById(R.id.baseHeadLeftTv)).setText(resId);
+				return this;
+			}
+
+			@Override
+			public XHeadViewHolder<BaseHeadBar> setBackText(CharSequence txt) {
+				((TextView) findViewById(R.id.baseHeadLeftTv)).setText(txt);
+
+				return this;
+			}
+
+			@Override
+			public XHeadViewHolder<BaseHeadBar> setTitleEnabled(boolean enabled) {
+				findViewById(R.id.baseHeadCenter).setEnabled(enabled);
+				return this;
+			}
+
+			@Override
+			public XHeadViewHolder<BaseHeadBar> setTitleImg(int resId) {
+				((TextView) findViewById(R.id.baseHeadCenterTv))
+						.setCompoundDrawablesWithIntrinsicBounds(resId, 0, 0, 0);
+				return this;
+			}
+
+			@Override
+			public XHeadViewHolder<BaseHeadBar> setTitleText(int resId) {
+				((TextView) findViewById(R.id.baseHeadCenterTv)).setText(resId);
+				return this;
+			}
+
+			@Override
+			public XHeadViewHolder<BaseHeadBar> setTitleText(CharSequence txt) {
+				((TextView) findViewById(R.id.baseHeadCenterTv)).setText(txt);
+				return this;
+			}
+
+			@Override
+			public XHeadViewHolder<BaseHeadBar> setMenuEnabled(boolean enabled) {
+				findViewById(R.id.baseHeadRight).setEnabled(enabled);
+				return this;
+			}
+
+			@Override
+			public XHeadViewHolder<BaseHeadBar> setMenuImg(int resId) {
+				((TextView) findViewById(R.id.baseHeadRightTv))
+						.setCompoundDrawablesWithIntrinsicBounds(0, 0, resId, 0);
+				return this;
+			}
+
+			@Override
+			public XHeadViewHolder<BaseHeadBar> setMenuText(int resId) {
+				((TextView) findViewById(R.id.baseHeadRightTv)).setText(resId);
+
+				return this;
+			}
+
+			@Override
+			public XHeadViewHolder<BaseHeadBar> setMenuText(CharSequence txt) {
+				((TextView) findViewById(R.id.baseHeadRightTv)).setText(txt);
+				return this;
+			}
+
+			@Override
+			public XHeadViewHolder<BaseHeadBar> setBackVisibility(int visibility) {
+				findViewById(R.id.baseHeadLeft).setVisibility(visibility);
+				return this;
+			}
+
+			@Override
+			public XHeadViewHolder<BaseHeadBar> setTitleVisibility(
+					int visibility) {
+				findViewById(R.id.baseHeadCenter).setVisibility(visibility);
+				return this;
+			}
+
+			@Override
+			public XHeadViewHolder<BaseHeadBar> setMenuVisibility(int visibility) {
+				findViewById(R.id.baseHeadRight).setVisibility(visibility);
+				return this;
+			}
+
+			@Override
+			public void onCreate(Context contex) {
+
+			}
+
+			@Override
+			public XHeadViewHolder<BaseHeadBar> setBackOnClickListener(
+					OnClickListener click) {
+
+				findViewById(R.id.baseHeadLeft).setOnClickListener(click);
+				return this;
+			}
+
+			@Override
+			public XHeadViewHolder<BaseHeadBar> setTitleOnClickListener(
+					OnClickListener click) {
+				findViewById(R.id.baseHeadCenter).setOnClickListener(click);
+				return this;
+			}
+
+			@Override
+			public XHeadViewHolder<BaseHeadBar> setMenuOnClickListener(
+					OnClickListener click) {
+				findViewById(R.id.baseHeadRight).setOnClickListener(click);
+
+				return this;
+			}
+
+			@Override
+			public XHeadViewHolder<BaseHeadBar> setBackgroundImge(int resId) {
+				getView().setBackgroundResource(resId);
+				return null;
+			}
+
+			@Override
+			public XHeadViewHolder<BaseHeadBar> setBackgroundColor(int color) {
+				getView().setBackgroundColor(color);
+				return this;
+			}
+
+		}
+
+	}
+
 	private XHeadViewHolder headViewHolder;
 
 	@Override
@@ -21,9 +186,18 @@ public abstract class XHeadActivity extends XActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 		super.setContentView(getLayoutRes());
-		setHeadViewHolder(new BaseHeadBar(), true);
 		overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
 
+	}
+
+	@Override
+	public void setTitle(CharSequence title) {
+		getHeadViewHolder().setTitleText(title);
+	}
+
+	@Override
+	public void setTitle(int titleId) {
+		getHeadViewHolder().setTitleText(titleId);
 	}
 
 	protected int getLayoutRes() {
@@ -38,151 +212,6 @@ public abstract class XHeadActivity extends XActivity {
 	protected int getHeadViewVisibility() {
 
 		return findViewById(R.id.xHead).getVisibility();
-	}
-
-	protected static class BaseHeadBar extends XHeadViewHolder<BaseHeadBar> {
-
-		@Override
-		public int getLayoutId() {
-
-			return R.layout.base_head;
-		}
-
-		@Override
-		public XHeadViewHolder<BaseHeadBar> setBackEnabled(boolean enabled) {
-			findViewById(R.id.baseHeadLeft).setEnabled(enabled);
-			return this;
-		}
-
-		@Override
-		public XHeadViewHolder<BaseHeadBar> setBackImg(int resId) {
-			findViewById(R.id.baseHead).setBackgroundResource(resId);
-			return this;
-		}
-
-		@Override
-		public XHeadViewHolder<BaseHeadBar> setBackText(int resId) {
-
-			((TextView) findViewById(R.id.baseHeadLeftTv)).setText(resId);
-			return this;
-		}
-
-		@Override
-		public XHeadViewHolder<BaseHeadBar> setBackText(String txt) {
-			((TextView) findViewById(R.id.baseHeadLeftTv)).setText(txt);
-
-			return this;
-		}
-
-		@Override
-		public XHeadViewHolder<BaseHeadBar> setTitleEnabled(boolean enabled) {
-			findViewById(R.id.baseHeadCenter).setEnabled(enabled);
-			return this;
-		}
-
-		@Override
-		public XHeadViewHolder<BaseHeadBar> setTitleImg(int resId) {
-			((TextView) findViewById(R.id.baseHeadCenterTv))
-					.setCompoundDrawablesWithIntrinsicBounds(resId, 0, 0, 0);
-			return this;
-		}
-
-		@Override
-		public XHeadViewHolder<BaseHeadBar> setTitleText(int resId) {
-			((TextView) findViewById(R.id.baseHeadCenterTv)).setText(resId);
-			return this;
-		}
-
-		@Override
-		public XHeadViewHolder<BaseHeadBar> setTitleText(String txt) {
-			((TextView) findViewById(R.id.baseHeadCenterTv)).setText(txt);
-			return this;
-		}
-
-		@Override
-		public XHeadViewHolder<BaseHeadBar> setMenuEnabled(boolean enabled) {
-			findViewById(R.id.baseHeadRight).setEnabled(enabled);
-			return this;
-		}
-
-		@Override
-		public XHeadViewHolder<BaseHeadBar> setMenuImg(int resId) {
-			((TextView) findViewById(R.id.baseHeadRightTv))
-					.setCompoundDrawablesWithIntrinsicBounds(0, 0, resId, 0);
-			return this;
-		}
-
-		@Override
-		public XHeadViewHolder<BaseHeadBar> setMenuText(int resId) {
-			((TextView) findViewById(R.id.baseHeadRightTv)).setText(resId);
-
-			return this;
-		}
-
-		@Override
-		public XHeadViewHolder<BaseHeadBar> setMenuText(String txt) {
-			((TextView) findViewById(R.id.baseHeadRightTv)).setText(txt);
-			return this;
-		}
-
-		@Override
-		public XHeadViewHolder<BaseHeadBar> setBackVisibility(int visibility) {
-			findViewById(R.id.baseHeadLeft).setVisibility(visibility);
-			return this;
-		}
-
-		@Override
-		public XHeadViewHolder<BaseHeadBar> setTitleVisibility(int visibility) {
-			findViewById(R.id.baseHeadCenter).setVisibility(visibility);
-			return this;
-		}
-
-		@Override
-		public XHeadViewHolder<BaseHeadBar> setMenuVisibility(int visibility) {
-			findViewById(R.id.baseHeadRight).setVisibility(visibility);
-			return this;
-		}
-
-		@Override
-		public void onCreate(Context contex) {
-
-		}
-
-		@Override
-		public XHeadViewHolder<BaseHeadBar> setBackOnClickListener(
-				OnClickListener click) {
-
-			findViewById(R.id.baseHeadLeft).setOnClickListener(click);
-			return this;
-		}
-
-		@Override
-		public XHeadViewHolder<BaseHeadBar> setTitleOnClickListener(
-				OnClickListener click) {
-			findViewById(R.id.baseHeadCenter).setOnClickListener(click);
-			return this;
-		}
-
-		@Override
-		public XHeadViewHolder<BaseHeadBar> setMenuOnClickListener(
-				OnClickListener click) {
-			findViewById(R.id.baseHeadRight).setOnClickListener(click);
-
-			return this;
-		}
-
-		@Override
-		public XHeadViewHolder<BaseHeadBar> setBackgroundImge(int resId) {
-			getView().setBackgroundResource(resId);
-			return null;
-		}
-
-		@Override
-		public XHeadViewHolder<BaseHeadBar> setBackgroundColor(int color) {
-			getView().setBackgroundColor(color);
-			return this;
-		}
-
 	}
 
 	@SuppressLint("NewApi")
