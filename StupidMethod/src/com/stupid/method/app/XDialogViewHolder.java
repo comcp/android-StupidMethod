@@ -28,8 +28,8 @@ public abstract class XDialogViewHolder implements IXDialogViewHolder {
 	protected LayoutInflater inflater;
 	protected Context mContext;
 	protected Object mData;
-	int PARAMS_WIDTH = RelativeLayout.LayoutParams.MATCH_PARENT;
-	int PARAMS_HEIGHT = RelativeLayout.LayoutParams.WRAP_CONTENT;
+	protected int PARAMS_WIDTH = RelativeLayout.LayoutParams.MATCH_PARENT;
+	protected int PARAMS_HEIGHT = RelativeLayout.LayoutParams.WRAP_CONTENT;
 
 	protected static class Builder {
 		protected XDialog.Builder builder;

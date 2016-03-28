@@ -30,7 +30,7 @@ public abstract class XHeadActivity extends XActivity {
 				return getHeadViewHolder();
 		}
 
-		protected class BaseHeadBar extends XHeadViewHolder<BaseHeadBar> {
+		public static class BaseHeadBar extends XHeadViewHolder<BaseHeadBar> {
 
 			@Override
 			public int getLayoutId() {
@@ -166,7 +166,7 @@ public abstract class XHeadActivity extends XActivity {
 			@Override
 			public XHeadViewHolder<BaseHeadBar> setBackgroundImge(int resId) {
 				getView().setBackgroundResource(resId);
-				return null;
+				return this;
 			}
 
 			@Override
