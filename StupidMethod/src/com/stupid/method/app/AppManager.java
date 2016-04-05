@@ -134,6 +134,15 @@ public class AppManager extends Application {
 			if (!root.exists()) {
 				root.mkdirs();
 			}
+			try {
+				File testRW = new File(root, "test");
+				testRW.createNewFile();
+				testRW.delete();
+			} catch (IOException e) {
+				root = getCacheDir();
+			} finally {
+
+			}
 			mRoot = root;
 		}
 		// DIR_FILE = String.format(DIR_FILE, root, NAMESPACE);

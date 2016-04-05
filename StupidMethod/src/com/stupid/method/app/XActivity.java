@@ -307,10 +307,10 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 	}
 
 	@Override
-	public void finish() {
+	protected void onDestroy() {
 		if (xdialog != null && xdialog.isShowing())
 			xdialog.dismiss();
-		super.finish();
+		super.onDestroy();
 	}
 
 	@Override

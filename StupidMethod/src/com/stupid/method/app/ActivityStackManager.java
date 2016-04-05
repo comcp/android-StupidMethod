@@ -59,11 +59,11 @@ public class ActivityStackManager {
 		if (activity == null) {
 			return;
 		}
-		for (int i = 0; i < activityStack.size(); i++) {
-			Activity a = activityStack.get(0);
-			if (a != null && !a.equals(activity)) {
-				a.finish();
+		for (Activity act : activityStack) {
+			if (act != null && !act.equals(activity)) {
+				act.finish();
 			}
+
 		}
 		activityStack.clear();
 		activityStack.push(activity);
@@ -86,17 +86,19 @@ public class ActivityStackManager {
 	 * 
 	 * @param class
 	 */
-	public static void finishActivityByClassName(Class obj) {
-		int i = 0;
-		while (i < activityStack.size()) {
-			Activity a = activityStack.get(i);
-			if (a.getClass().getName().equals(obj.getName())) {
-				activityStack.remove(i);
-				a.finish();
-				i--;
+	public static void finishActivityByClassName(Class<? extends Activity> obj) {
+
+		if (obj == null)
+			return;
+		for (Activity act : activityStack) {
+
+			if (act.getClass().getName().equals(obj.getName())) {
+				if (activityStack.remove(act))
+					act.finish();
 			}
-			i++;
+
 		}
+
 	}
 
 	/**
