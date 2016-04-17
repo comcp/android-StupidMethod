@@ -31,9 +31,10 @@ public abstract class XHeadViewHolder<T extends XHeadViewHolder<?>> implements
 	}
 
 	public XHeadViewHolder<T> setVisibility(int visibility) {
-		if (mRoot != null)
-			mRoot.setVisibility(visibility);
-		else
+		if (mRoot != null) {
+			View view = (View) mRoot.getParent();
+			view.setVisibility(visibility);
+		} else
 			XLog.e(tag, "XHeadViewHolder.mRoot 未初始化");
 		return this;
 	}
