@@ -44,7 +44,7 @@ public class JsonUtils {
 	/** 防止出现json exception */
 	public static <T> List<T> parseArray(String json, Class<T> cls) {
 
-		List<T> t = null;
+		List<T> t = new ArrayList<T>(0);
 		try {
 
 			t = JSON.parseArray(json, cls);
