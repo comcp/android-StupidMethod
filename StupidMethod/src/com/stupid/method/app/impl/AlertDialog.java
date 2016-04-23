@@ -3,6 +3,7 @@ package com.stupid.method.app.impl;
 import java.io.Serializable;
 
 import android.content.Context;
+import android.content.DialogInterface.OnDismissListener;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -143,4 +144,5 @@ public class AlertDialog extends XDialogViewHolder implements OnClickListener {
 
 		}
 	}
+
 }

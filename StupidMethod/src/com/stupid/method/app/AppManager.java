@@ -309,7 +309,7 @@ public class AppManager extends Application {
 	}
 
 	public AppManager setXmlBoolean(Object key, boolean value) {
-		getSharedPreferences().edit().putBoolean(getKey(key), value);
+		getSharedPreferences().edit().putBoolean(getKey(key), value).commit();
 		return this;
 	}
 
@@ -323,7 +323,7 @@ public class AppManager extends Application {
 
 	public AppManager setXmlInt(Object key, int value) {
 
-		getSharedPreferences().edit().putInt(getKey(key), value);
+		getSharedPreferences().edit().putInt(getKey(key), value).commit();
 		return this;
 
 	}

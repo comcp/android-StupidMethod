@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -179,7 +180,7 @@ public abstract class XHeadActivity extends XActivity {
 
 	}
 
-	private XHeadViewHolder headViewHolder;
+	private XHeadViewHolder<?> headViewHolder;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -215,19 +216,21 @@ public abstract class XHeadActivity extends XActivity {
 	}
 
 	@SuppressLint("NewApi")
-	protected void setHeadViewHolder(XHeadViewHolder headViewHolder,
+	protected void setHeadViewHolder(XHeadViewHolder<?> headViewHolder,
 			boolean needTopPadding) {
 
 		ViewGroup viewGroup = (ViewGroup) findViewById(R.id.xHead);
 		viewGroup.setVisibility(View.VISIBLE);
 		if (viewGroup != null) {
-			XHeadViewHolder old = this.headViewHolder;
+			XHeadViewHolder<?> old = this.headViewHolder;
 
 			if (viewGroup.getChildCount() > 0) {
 				viewGroup.removeAllViews();
 			}
+
 			if (old != null)
 				old.onDestory(0, 0);
+			headViewHolder.setParent(viewGroup);
 			headViewHolder.setInflater(getLayoutInflater());
 			headViewHolder.onCreate(this);
 
@@ -278,7 +281,9 @@ public abstract class XHeadActivity extends XActivity {
 
 	@Override
 	public void setContentView(int layoutResID) {
-		View view = View.inflate(this, layoutResID, null);
+
+		ViewGroup vg = (ViewGroup) findViewById(R.id.xContent);
+		View view = LayoutInflater.from(this).inflate(layoutResID, vg, false);
 		setContentView(view);
 
 	}
@@ -288,10 +293,14 @@ public abstract class XHeadActivity extends XActivity {
 
 		ViewGroup viewGroup = (ViewGroup) findViewById(R.id.xContent);
 		viewGroup.setVisibility(View.VISIBLE);
-		if (viewGroup.getChildCount() > 0) {
-			viewGroup.removeAllViews();
+
+		View view2 = viewGroup.getChildAt(0);
+		for (int i = 0; i < viewGroup.getChildCount(); i++) {
+			viewGroup.removeViewAt(i);
 		}
-		viewGroup.addView(view);
+		viewGroup.addView(view, viewGroup.getChildCount());
+		if (view2 != null)
+			viewGroup.addView(view2);
 	}
 
 	public void setSupContentView(int layoutResID) {
@@ -308,7 +317,7 @@ public abstract class XHeadActivity extends XActivity {
 		return 0;
 	}
 
-	protected XHeadViewHolder getHeadViewHolder() {
+	protected XHeadViewHolder<?> getHeadViewHolder() {
 		return headViewHolder;
 	}
 

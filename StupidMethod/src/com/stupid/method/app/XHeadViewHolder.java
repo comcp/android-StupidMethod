@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 
 import com.stupid.method.adapter.IXViewHolder;
 import com.stupid.method.adapter.OnClickItemListener;
@@ -14,6 +15,7 @@ public abstract class XHeadViewHolder<T extends XHeadViewHolder<?>> implements
 		IXViewHolder<Object> {
 	private static final String tag = "XHeadViewHolder";
 	private View mRoot;
+	private ViewGroup mParent;
 
 	@Override
 	public final View getView() {
@@ -100,7 +102,7 @@ public abstract class XHeadViewHolder<T extends XHeadViewHolder<?>> implements
 	@Override
 	public View setInflater(LayoutInflater inflater) {
 
-		return mRoot = inflater.inflate(getLayoutId(), null);
+		return mRoot = inflater.inflate(getLayoutId(), getParent(), false);
 	}
 
 	@Deprecated
@@ -116,6 +118,21 @@ public abstract class XHeadViewHolder<T extends XHeadViewHolder<?>> implements
 
 	public T getTemplte() {
 		return (T) this;
+	}
+
+	/**
+	 * @return the mParent
+	 */
+	public ViewGroup getParent() {
+		return mParent;
+	}
+
+	/**
+	 * @param mParent
+	 *            the mParent to set
+	 */
+	public void setParent(ViewGroup mParent) {
+		this.mParent = mParent;
 	}
 
 }

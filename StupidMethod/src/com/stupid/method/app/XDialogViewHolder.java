@@ -1,9 +1,6 @@
 package com.stupid.method.app;
 
 import static android.view.View.MeasureSpec.getMode;
-
-import java.io.Serializable;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.support.v4.app.FragmentActivity;
@@ -31,53 +28,11 @@ public abstract class XDialogViewHolder implements IXDialogViewHolder {
 	protected int PARAMS_WIDTH = RelativeLayout.LayoutParams.MATCH_PARENT;
 	protected int PARAMS_HEIGHT = RelativeLayout.LayoutParams.WRAP_CONTENT;
 
-	protected static class Builder {
-		protected XDialog.Builder builder;
-
-		public XDialog.Builder dismiss() {
-			return builder.dismiss();
-		}
-
-		public XDialog getDialog() {
-			return builder.getDialog();
-		}
-
-		public boolean isCancelable() {
-			return builder.isCancelable();
-		}
-
-		public boolean isShowing() {
-			return builder.isShowing();
-		}
-
-		public XDialog.Builder setCancelable(boolean cancelable) {
-			return builder.setCancelable(cancelable);
-		}
-
-		public XDialog.Builder setData(Serializable mData) {
-			return builder.setData(mData);
-		}
-
-		public XDialog.Builder setStyle(int style) {
-			return builder.setStyle(style);
-		}
-
-		public XDialog.Builder setTheme(int theme) {
-			return builder.setTheme(theme);
-		}
-
-		public XDialog.Builder show() {
-			return builder.show();
-		}
-
-		public int hashCode() {
-
-			return builder.hashCode();
-		}
+	protected static class Builder extends XDialog.Builder {
 
 		public Builder(FragmentActivity activity,
 				Class<? extends XDialogViewHolder> clz) {
-			builder = new XDialog.Builder(activity, clz);
+			super(activity, clz);
 		}
 
 	}

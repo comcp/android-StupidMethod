@@ -16,6 +16,7 @@ import android.view.Window;
 
 import com.stupid.method.R;
 
+@Deprecated
 abstract public class XDialogFragment extends DialogFragment implements
 		IXFragment {
 

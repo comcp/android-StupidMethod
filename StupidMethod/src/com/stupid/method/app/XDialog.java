@@ -5,6 +5,7 @@ import java.lang.ref.WeakReference;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
@@ -21,7 +22,7 @@ import com.stupid.method.util.XLog;
 public class XDialog extends DialogFragment implements IXDialog {
 
 	public static class Builder {
-		XDialogController mController;
+		private final XDialogController mController;
 
 		protected XDialog mDialog = null;
 
@@ -29,11 +30,18 @@ public class XDialog extends DialogFragment implements IXDialog {
 
 		public Builder(FragmentActivity activity,
 				Class<? extends IXDialogViewHolder> clz) {
-			this(activity, clz, STYLE_NO_FRAME, android.R.style.Theme_Dialog);
+			this(activity, clz, STYLE_NO_FRAME, android.R.style.Theme_Dialog,
+					null);
+		}
+
+		public Builder setOnDismissListener(OnDismissListener listener) {
+			mController.listener = listener;
+			return this;
 		}
 
 		public Builder(FragmentActivity activity,
-				Class<? extends IXDialogViewHolder> clz, int style, int theme) {
+				Class<? extends IXDialogViewHolder> clz, int style, int theme,
+				OnDismissListener listener) {
 			mController = new XDialogController();
 			mController.mClz = clz;
 			mController.mFm = activity.getSupportFragmentManager();
@@ -88,13 +96,13 @@ public class XDialog extends DialogFragment implements IXDialog {
 			return this;
 		}
 
-		public Builder show() {
+		public XDialog show() {
 			if (mDialog == null) {
 				mDialog = new XDialog(style, theme);
 				mDialog.mController = mController;
 			}
-			mDialog.show();
-			return this;
+
+			return mDialog.show();
 		}
 
 	}
@@ -126,7 +134,7 @@ public class XDialog extends DialogFragment implements IXDialog {
 		public Serializable mData = null;
 		public Class<? extends IXDialogViewHolder> mClz;
 		public WeakReference<IXDialogViewHolder> mReferenceHolder;
-
+		OnDismissListener listener;
 	}
 
 	XDialogController mController;
@@ -220,6 +228,9 @@ public class XDialog extends DialogFragment implements IXDialog {
 				holder.onDestory(0, 0);
 			}
 		}
+		if (mController.listener != null) {
+			mController.listener.onDismiss(dialog);
+		}
 		super.onDismiss(dialog);
 	}
 
@@ -254,7 +265,7 @@ public class XDialog extends DialogFragment implements IXDialog {
 
 	}
 
-	public IXDialog show() {
+	public XDialog show() {
 		if (mController == null)
 			return null;
 		if (mController.mFm != null)

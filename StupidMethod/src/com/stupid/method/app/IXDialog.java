@@ -2,7 +2,7 @@ package com.stupid.method.app;
 
 public interface IXDialog {
 
-	IXDialog show();
+	XDialog show();
 
 	void dismiss();
 
