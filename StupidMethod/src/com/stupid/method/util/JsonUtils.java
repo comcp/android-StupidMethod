@@ -44,12 +44,13 @@ public class JsonUtils {
 	/** 防止出现json exception */
 	public static <T> List<T> parseArray(String json, Class<T> cls) {
 
-		List<T> t = new ArrayList<T>(0);
+		List<T> t;
 		try {
 
 			t = JSON.parseArray(json, cls);
 		} catch (Exception e) {
 			e.printStackTrace();
+			t = new ArrayList<T>(0);
 		}
 		return t;
 	}

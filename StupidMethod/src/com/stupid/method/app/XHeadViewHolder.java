@@ -84,6 +84,12 @@ public abstract class XHeadViewHolder<T extends XHeadViewHolder<?>> implements
 
 	abstract public XHeadViewHolder<T> setMenuVisibility(int visibility);
 
+	abstract public View getTitleView();
+
+	abstract public View getMenuView();
+
+	abstract public View getBackView();
+
 	@Override
 	@Deprecated
 	public View getView(Object arg0, int arg1, boolean arg2) {

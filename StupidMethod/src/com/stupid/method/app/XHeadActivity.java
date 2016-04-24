@@ -176,6 +176,21 @@ public abstract class XHeadActivity extends XActivity {
 				return this;
 			}
 
+			@Override
+			public View getTitleView() {
+				return findViewById(R.id.baseHeadCenterTv);
+			}
+
+			@Override
+			public View getMenuView() {
+				return findViewById(R.id.baseHeadRightTv);
+			}
+
+			@Override
+			public View getBackView() {
+				return findViewById(R.id.baseHeadLeftTv);
+			}
+
 		}
 
 	}
