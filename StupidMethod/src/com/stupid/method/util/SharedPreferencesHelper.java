@@ -19,8 +19,12 @@ import android.util.Log;
  * **/
 public class SharedPreferencesHelper {
 
+    private static final String empty = "";
+
     private static final WeakHashMap<Context, Map<String, SharedPreferencesHelper>> mCache = new WeakHashMap<Context, Map<String, SharedPreferencesHelper>>(
             3);
+
+    private static final String tag = "SharePreferenceHelper";
 
     /***
      * 线程安全
@@ -56,14 +60,6 @@ public class SharedPreferencesHelper {
         return result;
     }
 
-    public synchronized static void onLowMemory() {
-
-        mCache.clear();
-    }
-
-    private static final String empty = "";
-    private static final String tag = "SharePreferenceHelper";
-
     private static String getKey(Object key) {
 
         if (key == null) {
@@ -81,25 +77,48 @@ public class SharedPreferencesHelper {
         }
     }
 
-    public SharedPreferencesHelper remove(String key) {
-        edit().remove(key).commit();
-        return this;
+    public synchronized static void onLowMemory() {
 
+        mCache.clear();
     }
 
-    public SharedPreferencesHelper clear() {
-        edit().clear().commit();
-        return this;
-    }
+    final private boolean autoCommit;
 
-    final private SharedPreferences sp;
+    final private SharedPreferences sp;// SP 杂化轨道,呵呵
 
     public SharedPreferencesHelper(Context context, String name) {
+        this(context, name, true);
+    }
+
+    public SharedPreferencesHelper(Context context, String name,
+            boolean autoCommit) {
         sp = context.getSharedPreferences(name, Context.MODE_PRIVATE);
+        this.autoCommit = autoCommit;
     }
 
     public SharedPreferencesHelper(SharedPreferences sp) {
+        this(sp, true);
+    }
+
+    public SharedPreferencesHelper(SharedPreferences sp, boolean autoCommit) {
         this.sp = sp;
+        this.autoCommit = autoCommit;
+    }
+
+    public SharedPreferencesHelper clear() {
+        edit().clear();
+        if (autoCommit)
+            edit().commit();
+        return this;
+    }
+
+    public SharedPreferencesHelper commit() {
+        edit().commit();
+        return this;
+    }
+
+    private Editor edit() {
+        return getSharedPreferences().edit();
     }
 
     public Map<String, ?> getAll() {
@@ -118,13 +137,13 @@ public class SharedPreferencesHelper {
         return getSharedPreferences().getInt(key, defValue);
     }
 
-    public <T> T getJSON(Class<T> clazz) {
-        return getJSON(clazz, clazz);
+    public <T> T getJSON(Class<?> key, Class<T> clazz) {
+        return getJSON(key.getName(), clazz);
 
     }
 
-    public <T> T getJSON(Class<?> key, Class<T> clazz) {
-        return getJSON(key.getName(), clazz);
+    public <T> T getJSON(Class<T> clazz) {
+        return getJSON(clazz, clazz);
 
     }
 
@@ -146,10 +165,6 @@ public class SharedPreferencesHelper {
         return sp;
     }
 
-    private Editor edit() {
-        return getSharedPreferences().edit();
-    }
-
     public String getString(String key) {
 
         return this.getString(key, empty);
@@ -167,22 +182,29 @@ public class SharedPreferencesHelper {
         return this;
     }
 
+    public SharedPreferencesHelper remove(String key) {
+        edit().remove(key);
+        if (autoCommit)
+            edit().commit();
+        return this;
+
+    }
+
     public SharedPreferencesHelper setBoolean(String key, boolean value) {
-        edit().putBoolean(key, value).commit();
+        edit().putBoolean(key, value);
+        if (autoCommit)
+            edit().commit();
+
         return this;
     }
 
     public SharedPreferencesHelper setInt(String key, int value) {
 
-        edit().putInt(key, value).commit();
+        edit().putInt(key, value);
+        if (autoCommit)
+            edit().commit();
         return this;
 
-    }
-
-    public SharedPreferencesHelper setJSON(Object value) {
-
-        setJSON(value.getClass().getName(), value);
-        return this;
     }
 
     public SharedPreferencesHelper setJSON(Class<?> key, Object value) {
@@ -191,23 +213,35 @@ public class SharedPreferencesHelper {
         return this;
     }
 
+    public SharedPreferencesHelper setJSON(Object value) {
+
+        setJSON(value.getClass().getName(), value);
+        return this;
+    }
+
     public SharedPreferencesHelper setJSON(String key, Object value) {
 
         edit().putString(
                 getKey(key),
                 value instanceof CharSequence ? value.toString() : JsonUtils
-                        .toJSONString(value)).commit();
+                        .toJSONString(value));
+        if (autoCommit)
+            edit().commit();
         return this;
     }
 
     public SharedPreferencesHelper setLont(String key, long value) {
-        edit().putLong(key, value).commit();
+        edit().putLong(key, value);
+        if (autoCommit)
+            edit().commit();
         return this;
     }
 
     public SharedPreferencesHelper setString(String key, String value) {
 
-        edit().putString(key, value).commit();
+        edit().putString(key, value);
+        if (autoCommit)
+            edit().commit();
         return this;
     }
 
