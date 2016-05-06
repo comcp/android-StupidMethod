@@ -136,6 +136,11 @@ abstract public class XActivity extends FragmentActivity implements IXActivity {
 
 	/** 显示键盘 **/
 	public void showKeyboardAtView(View view) {
+		if (view != null) {
+			view.setFocusable(true);
+			view.setFocusableInTouchMode(true);
+			view.requestFocus();
+		}
 		InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 		inputMethodManager
 				.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
