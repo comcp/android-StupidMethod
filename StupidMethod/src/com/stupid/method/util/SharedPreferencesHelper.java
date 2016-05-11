@@ -1,20 +1,28 @@
-package com.neusoft.util;
+package com.stupid.method.util;
 
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.util.Base64;
 import android.util.Log;
 
 /**
  * 
  * SharedPreferences 工具类
  * 
- * @author wangx 2016-04-27
- * 
+ * @author wangx 2016-04-27 重构
  * 
  * **/
 public class SharedPreferencesHelper {
@@ -190,7 +198,7 @@ public class SharedPreferencesHelper {
 
     }
 
-    public SharedPreferencesHelper setBoolean(String key, boolean value) {
+    public SharedPreferencesHelper putBoolean(String key, boolean value) {
         edit().putBoolean(key, value);
         if (autoCommit)
             edit().commit();
@@ -198,7 +206,7 @@ public class SharedPreferencesHelper {
         return this;
     }
 
-    public SharedPreferencesHelper setInt(String key, int value) {
+    public SharedPreferencesHelper putInt(String key, int value) {
 
         edit().putInt(key, value);
         if (autoCommit)
@@ -207,19 +215,19 @@ public class SharedPreferencesHelper {
 
     }
 
-    public SharedPreferencesHelper setJSON(Class<?> key, Object value) {
+    public SharedPreferencesHelper putJSON(Class<?> key, Object value) {
 
-        setJSON(key.getName(), value);
+        putJSON(key.getName(), value);
         return this;
     }
 
-    public SharedPreferencesHelper setJSON(Object value) {
+    public SharedPreferencesHelper putJSON(Object value) {
 
-        setJSON(value.getClass().getName(), value);
+        putJSON(value.getClass().getName(), value);
         return this;
     }
 
-    public SharedPreferencesHelper setJSON(String key, Object value) {
+    public SharedPreferencesHelper putJSON(String key, Object value) {
 
         edit().putString(
                 getKey(key),
@@ -230,14 +238,14 @@ public class SharedPreferencesHelper {
         return this;
     }
 
-    public SharedPreferencesHelper setLont(String key, long value) {
+    public SharedPreferencesHelper putLon(String key, long value) {
         edit().putLong(key, value);
         if (autoCommit)
             edit().commit();
         return this;
     }
 
-    public SharedPreferencesHelper setString(String key, String value) {
+    public SharedPreferencesHelper putString(String key, String value) {
 
         edit().putString(key, value);
         if (autoCommit)
@@ -252,4 +260,54 @@ public class SharedPreferencesHelper {
         return this;
     }
 
+    /**
+     * 测试中的方法,保存序列化的对象到xml里
+     * 
+     * @param key
+     * @author wangx
+     * **/
+    @SuppressLint("NewApi")
+    public void putObject(String key, Serializable serializable)
+            throws IOException {
+
+        ByteArrayOutputStream bots = new ByteArrayOutputStream();
+        ObjectOutputStream opt = new ObjectOutputStream(bots);
+        opt.writeObject(serializable);
+        opt.flush();
+        opt.close();
+        opt.reset();
+
+        String base64 = Base64.encodeToString(bots.toByteArray(),
+                Base64.DEFAULT);
+        putString(key, base64);
+        bots = null;
+
+        opt = null;
+        base64 = null;
+
+    }
+
+    /**
+     * 测试中的方法,从xml里取出序列化的对象
+     * 
+     * @param key
+     * @author wangx
+     * @throws ClassNotFoundException
+     * **/
+    @SuppressLint("NewApi")
+    public Object getObject(String key) throws ClassNotFoundException {
+
+        String base64 = getString(key);
+        ByteArrayInputStream is = new ByteArrayInputStream(Base64.decode(
+                base64, Base64.DEFAULT));
+        try {
+            ObjectInputStream ois = new ObjectInputStream(is);
+
+            return ois.readObject();
+
+        } catch (IOException e) {
+            return null;
+        }
+
+    }
 }
