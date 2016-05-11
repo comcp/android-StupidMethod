@@ -1,17 +1,24 @@
-package com.neusoft.util;
+package com.stupid.method.util;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 
+/**
+ * @author wangx
+ * 
+ * **/
 public class ToastUtil {
-    static WeakReference<Toast> reference = null;
+    static WeakReference<Toast> refToast = null;
+    static WeakReference<Handler> refHandler = null;
 
     private static Toast getToast() {
-        return reference == null ? null : reference.get();
+        return refToast == null ? null : refToast.get();
     }
 
     public static void showToast(Context context, CharSequence text) {
@@ -28,17 +35,14 @@ public class ToastUtil {
 
         Toast toast = getToast();
 
-        if (toast == null)
-            toast = Toast.makeText(context, text, duration);
-        else {
+        if (toast != null)
             toast.cancel();
-            toast = Toast.makeText(context, text, duration);
-        }
+        toast = Toast.makeText(context, text, duration);
 
         toast.setGravity(gravity, toast.getXOffset(), toast.getYOffset());
-        reference = new WeakReference<Toast>(toast);
+        refToast = new WeakReference<Toast>(toast);
 
-        toast.show();
+        showToastOnUiThread(context, toast);
 
     }
 
@@ -74,8 +78,31 @@ public class ToastUtil {
         }
 
         toast.setGravity(gravity, toast.getXOffset(), toast.getYOffset());
-        reference = new WeakReference<Toast>(toast);
+        refToast = new WeakReference<Toast>(toast);
         toast.setView(view);
-        toast.show();
+        showToastOnUiThread(context, toast);
+    }
+
+    /**
+     * 如果处于UI线程里,则直接显示,否则 放到ＵＩ线程里显示
+     */
+    public static void showToastOnUiThread(Context context, final Toast toast) {
+        if (Looper.getMainLooper().getThread().getId() == Thread
+                .currentThread().getId())
+            toast.show();
+        else {
+            Handler handler = refHandler.get();
+            if (handler == null)
+                refHandler = new WeakReference<Handler>(handler = new Handler(
+                        context.getMainLooper()));
+            handler.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    toast.show();
+                }
+            });
+
+        }
     }
 }
