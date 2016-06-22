@@ -1,6 +1,5 @@
 package com.stupid.method.util;
 
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -27,287 +26,271 @@ import android.util.Log;
  * **/
 public class SharedPreferencesHelper {
 
-    private static final String empty = "";
-
-    private static final WeakHashMap<Context, Map<String, SharedPreferencesHelper>> mCache = new WeakHashMap<Context, Map<String, SharedPreferencesHelper>>(
-            3);
-
-    private static final String tag = "SharePreferenceHelper";
-
-    /***
-     * 线程安全
-     * **/
-    public static SharedPreferencesHelper getCache(Context context, String name) {
-        Map<String, SharedPreferencesHelper> hashmap = null;
-        hashmap = mCache.get(context);// 根据主键 取出 主键缓存,
-
-        if (hashmap == null) {// 如果二级缓存是否为空,
-            synchronized (mCache) {// 给一级缓存加线程锁
-                hashmap = mCache.get(context);// 再取出二级缓存
-                if (hashmap == null) {// 判断二级缓存是否为空,在极端条件下,这个地方很有可能会被其他线程初始化
-                    hashmap = new WeakHashMap<String, SharedPreferencesHelper>(
-                            2);
-                    mCache.put(context, hashmap);
-                }
-
-            }
+	private static final String empty = "";
+
+	private static final WeakHashMap<Context, Map<String, SharedPreferencesHelper>> mCache = new WeakHashMap<Context, Map<String, SharedPreferencesHelper>>(
+			3);
 
-        }
-        SharedPreferencesHelper result = null;
-        result = hashmap.get(name);
-        if (result == null) {
-            synchronized (hashmap) {
-                result = hashmap.get(name);
-                if (result == null) {
-                    result = new SharedPreferencesHelper(context, name);
-                    hashmap.put(name, result);
-                }
-            }
-        }
+	private static final String tag = "SharePreferenceHelper";
 
-        return result;
-    }
+	/***
+	 * 线程安全
+	 * **/
+	public static SharedPreferencesHelper getCache(Context context, String name) {
+		Map<String, SharedPreferencesHelper> hashmap = null;
+		hashmap = mCache.get(context);// 根据主键 取出 主键缓存,
 
-    private static String getKey(Object key) {
+		if (hashmap == null) {// 如果二级缓存是否为空,
+			synchronized (mCache) {// 给一级缓存加线程锁
+				hashmap = mCache.get(context);// 再取出二级缓存
+				if (hashmap == null) {// 判断二级缓存是否为空,在极端条件下,这个地方很有可能会被其他线程初始化
+					hashmap = new WeakHashMap<String, SharedPreferencesHelper>(
+							2);
+					mCache.put(context, hashmap);
+				}
 
-        if (key == null) {
-            return empty;
-        } else if (key instanceof CharSequence) {
+			}
 
-            return key.toString();
+		}
+		SharedPreferencesHelper result = null;
+		result = hashmap.get(name);
+		if (result == null) {
+			synchronized (hashmap) {
+				result = hashmap.get(name);
+				if (result == null) {
+					result = new SharedPreferencesHelper(context, name);
+					hashmap.put(name, result);
+				}
+			}
+		}
+
+		return result;
+	}
+
+	private static String getKey(Object key) {
+
+		if (key == null) {
+			return empty;
+		} else if (key instanceof CharSequence) {
 
-        } else if (key instanceof Class<?>) {
+			return key.toString();
 
-            return ((Class<?>) key).getName();
-        } else {
+		} else if (key instanceof Class<?>) {
 
-            return key.getClass().getName();
-        }
-    }
+			return ((Class<?>) key).getName();
+		} else {
 
-    public synchronized static void onLowMemory() {
+			return key.getClass().getName();
+		}
+	}
 
-        mCache.clear();
-    }
+	public synchronized static void onLowMemory() {
 
-    final private boolean autoCommit;
+		mCache.clear();
+	}
 
-    final private SharedPreferences sp;// SP 杂化轨道,呵呵
+	final private SharedPreferences sp;// SP 杂化轨道,呵呵
 
-    public SharedPreferencesHelper(Context context, String name) {
-        this(context, name, true);
-    }
+	public SharedPreferencesHelper(Context context, String name) {
+		sp = context.getSharedPreferences(name, Context.MODE_PRIVATE);
+	}
 
-    public SharedPreferencesHelper(Context context, String name,
-            boolean autoCommit) {
-        sp = context.getSharedPreferences(name, Context.MODE_PRIVATE);
-        this.autoCommit = autoCommit;
-    }
+	public SharedPreferencesHelper(SharedPreferences sp) {
+		this.sp = sp;
+	}
 
-    public SharedPreferencesHelper(SharedPreferences sp) {
-        this(sp, true);
-    }
+	public SharedPreferencesHelper clear() {
+		Editor editor = edit();
+		editor.clear();
+		editor.commit();
+		return this;
+	}
 
-    public SharedPreferencesHelper(SharedPreferences sp, boolean autoCommit) {
-        this.sp = sp;
-        this.autoCommit = autoCommit;
-    }
+	private Editor edit() {
+		return getSharedPreferences().edit();
+	}
 
-    public SharedPreferencesHelper clear() {
-        edit().clear();
-        if (autoCommit)
-            edit().commit();
-        return this;
-    }
+	public Map<String, ?> getAll() {
+		return getSharedPreferences().getAll();
+	}
 
-    public SharedPreferencesHelper commit() {
-        edit().commit();
-        return this;
-    }
+	public boolean getBoolean(String key, boolean defValue) {
+		return getSharedPreferences().getBoolean(key, defValue);
+	}
 
-    private Editor edit() {
-        return getSharedPreferences().edit();
-    }
+	public float getFloat(String key, float defValue) {
+		return getSharedPreferences().getFloat(key, defValue);
+	}
 
-    public Map<String, ?> getAll() {
-        return getSharedPreferences().getAll();
-    }
+	public int getInt(String key, int defValue) {
+		return getSharedPreferences().getInt(key, defValue);
+	}
 
-    public boolean getBoolean(String key, boolean defValue) {
-        return getSharedPreferences().getBoolean(key, defValue);
-    }
+	public <T> T getJSON(Class<?> key, Class<T> clazz) {
+		return getJSON(key.getName(), clazz);
 
-    public float getFloat(String key, float defValue) {
-        return getSharedPreferences().getFloat(key, defValue);
-    }
+	}
 
-    public int getInt(String key, int defValue) {
-        return getSharedPreferences().getInt(key, defValue);
-    }
+	public <T> T getJSON(Class<T> clazz) {
+		return getJSON(clazz, clazz);
 
-    public <T> T getJSON(Class<?> key, Class<T> clazz) {
-        return getJSON(key.getName(), clazz);
+	}
 
-    }
+	public <T> T getJSON(String key, Class<T> clazz) {
+		try {
+			return JsonUtils.parseObject(getString((key)), clazz);
+		} catch (Exception e) {
+			Log.w(tag, "getJSON", e);
+			return null;
+		}
 
-    public <T> T getJSON(Class<T> clazz) {
-        return getJSON(clazz, clazz);
+	}
 
-    }
+	/**
+	 * 测试中的方法,从xml里取出序列化的对象
+	 * 
+	 * @param key
+	 * @author wangx
+	 * @throws ClassNotFoundException
+	 * **/
+	@SuppressLint("NewApi")
+	public Object getObject(String key) throws ClassNotFoundException {
 
-    public <T> T getJSON(String key, Class<T> clazz) {
-        try {
-            return JsonUtils.parseObject(
-                    getSharedPreferences().getString((key), empty), clazz);
-        } catch (Exception e) {
+		String base64 = getString(key);
+		ByteArrayInputStream is = new ByteArrayInputStream(Base64.decode(
+				base64, Base64.DEFAULT));
+		try {
+			ObjectInputStream ois = new ObjectInputStream(is);
 
-            Log.w(tag, "getJSON", e);
+			return ois.readObject();
 
-            return null;
-        }
+		} catch (IOException e) {
+			return null;
+		}
 
-    }
+	}
 
-    private SharedPreferences getSharedPreferences() {
+	private SharedPreferences getSharedPreferences() {
 
-        return sp;
-    }
+		return sp;
+	}
 
-    public String getString(String key) {
+	public String getString(String key) {
 
-        return this.getString(key, empty);
-    }
+		return this.getString(key, empty);
+	}
 
-    public String getString(String key, String defValue) {
+	public String getString(String key, String defValue) {
 
-        return getSharedPreferences().getString(key, defValue);
-    }
+		return getSharedPreferences().getString(key, defValue);
+	}
 
-    public SharedPreferencesHelper registerOnSharedPreferenceChangeListener(
-            OnSharedPreferenceChangeListener listener) {
-        getSharedPreferences().registerOnSharedPreferenceChangeListener(
-                listener);
-        return this;
-    }
+	public SharedPreferencesHelper putBoolean(String key, boolean value) {
+		Editor editor = edit();
+		editor.putBoolean(key, value);
 
-    public SharedPreferencesHelper remove(String key) {
-        edit().remove(key);
-        if (autoCommit)
-            edit().commit();
-        return this;
+		editor.commit();
 
-    }
+		return this;
+	}
 
-    public SharedPreferencesHelper putBoolean(String key, boolean value) {
-        edit().putBoolean(key, value);
-        if (autoCommit)
-            edit().commit();
-
-        return this;
-    }
+	public SharedPreferencesHelper putInt(String key, int value) {
 
-    public SharedPreferencesHelper putInt(String key, int value) {
+		Editor editor = edit();
+		editor.putInt(key, value);
 
-        edit().putInt(key, value);
-        if (autoCommit)
-            edit().commit();
-        return this;
+		editor.commit();
+		return this;
 
-    }
+	}
 
-    public SharedPreferencesHelper putJSON(Class<?> key, Object value) {
+	public SharedPreferencesHelper putJSON(Class<?> key, Object value) {
 
-        putJSON(key.getName(), value);
-        return this;
-    }
+		putJSON(key.getName(), value);
+		return this;
+	}
 
-    public SharedPreferencesHelper putJSON(Object value) {
+	public SharedPreferencesHelper putJSON(Object value) {
 
-        putJSON(value.getClass().getName(), value);
-        return this;
-    }
+		putJSON(value.getClass().getName(), value);
+		return this;
+	}
 
-    public SharedPreferencesHelper putJSON(String key, Object value) {
+	public SharedPreferencesHelper putJSON(String key, Object value) {
+		Editor editor = edit();
+		editor.putString(
+				getKey(key),
+				value instanceof CharSequence ? value.toString() : JsonUtils
+						.toJSONString(value));
 
-        edit().putString(
-                getKey(key),
-                value instanceof CharSequence ? value.toString() : JsonUtils
-                        .toJSONString(value));
-        if (autoCommit)
-            edit().commit();
-        return this;
-    }
+		editor.commit();
+		return this;
+	}
 
-    public SharedPreferencesHelper putLon(String key, long value) {
-        edit().putLong(key, value);
-        if (autoCommit)
-            edit().commit();
-        return this;
-    }
+	public SharedPreferencesHelper putLon(String key, long value) {
+		Editor editor = edit();
+		editor.putLong(key, value);
 
-    public SharedPreferencesHelper putString(String key, String value) {
+		editor.commit();
+		return this;
+	}
 
-        edit().putString(key, value);
-        if (autoCommit)
-            edit().commit();
-        return this;
-    }
+	/**
+	 * 测试中的方法,保存序列化的对象到xml里
+	 * 
+	 * @param key
+	 * @author wangx
+	 * **/
+	@SuppressLint("NewApi")
+	public void putObject(String key, Serializable serializable)
+			throws IOException {
 
-    public SharedPreferencesHelper unregisterOnSharedPreferenceChangeListener(
-            OnSharedPreferenceChangeListener listener) {
-        getSharedPreferences().unregisterOnSharedPreferenceChangeListener(
-                listener);
-        return this;
-    }
+		ByteArrayOutputStream bots = new ByteArrayOutputStream();
+		ObjectOutputStream opt = new ObjectOutputStream(bots);
+		opt.writeObject(serializable);
+		opt.flush();
+		opt.close();
+		opt.reset();
 
-    /**
-     * 测试中的方法,保存序列化的对象到xml里
-     * 
-     * @param key
-     * @author wangx
-     * **/
-    @SuppressLint("NewApi")
-    public void putObject(String key, Serializable serializable)
-            throws IOException {
+		String base64 = Base64.encodeToString(bots.toByteArray(),
+				Base64.DEFAULT);
+		putString(key, base64);
+		bots = null;
 
-        ByteArrayOutputStream bots = new ByteArrayOutputStream();
-        ObjectOutputStream opt = new ObjectOutputStream(bots);
-        opt.writeObject(serializable);
-        opt.flush();
-        opt.close();
-        opt.reset();
+		opt = null;
+		base64 = null;
 
-        String base64 = Base64.encodeToString(bots.toByteArray(),
-                Base64.DEFAULT);
-        putString(key, base64);
-        bots = null;
+	}
 
-        opt = null;
-        base64 = null;
+	public SharedPreferencesHelper putString(String key, String value) {
 
-    }
+		Editor editor = edit();
+		editor.putString(key, value);
 
-    /**
-     * 测试中的方法,从xml里取出序列化的对象
-     * 
-     * @param key
-     * @author wangx
-     * @throws ClassNotFoundException
-     * **/
-    @SuppressLint("NewApi")
-    public Object getObject(String key) throws ClassNotFoundException {
+		editor.commit();
+		return this;
+	}
 
-        String base64 = getString(key);
-        ByteArrayInputStream is = new ByteArrayInputStream(Base64.decode(
-                base64, Base64.DEFAULT));
-        try {
-            ObjectInputStream ois = new ObjectInputStream(is);
+	public SharedPreferencesHelper registerOnSharedPreferenceChangeListener(
+			OnSharedPreferenceChangeListener listener) {
+		getSharedPreferences().registerOnSharedPreferenceChangeListener(
+				listener);
+		return this;
+	}
 
-            return ois.readObject();
+	public SharedPreferencesHelper remove(String key) {
+		Editor editor = edit();
+		editor.remove(key);
 
-        } catch (IOException e) {
-            return null;
-        }
+		editor.commit();
+		return this;
 
-    }
+	}
+
+	public SharedPreferencesHelper unregisterOnSharedPreferenceChangeListener(
+			OnSharedPreferenceChangeListener listener) {
+		getSharedPreferences().unregisterOnSharedPreferenceChangeListener(
+				listener);
+		return this;
+	}
 }
