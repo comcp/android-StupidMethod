@@ -102,7 +102,7 @@ public class SharedPreferencesHelper {
 	public SharedPreferencesHelper clear() {
 		Editor editor = edit();
 		editor.clear();
-		editor.commit();
+		commitPreferences(editor);
 		return this;
 	}
 
@@ -189,7 +189,7 @@ public class SharedPreferencesHelper {
 		Editor editor = edit();
 		editor.putBoolean(key, value);
 
-		editor.commit();
+		commitPreferences(editor);
 
 		return this;
 	}
@@ -199,7 +199,7 @@ public class SharedPreferencesHelper {
 		Editor editor = edit();
 		editor.putInt(key, value);
 
-		editor.commit();
+		commitPreferences(editor);
 		return this;
 
 	}
@@ -223,7 +223,7 @@ public class SharedPreferencesHelper {
 				value instanceof CharSequence ? value.toString() : JsonUtils
 						.toJSONString(value));
 
-		editor.commit();
+		commitPreferences(editor);
 		return this;
 	}
 
@@ -231,7 +231,7 @@ public class SharedPreferencesHelper {
 		Editor editor = edit();
 		editor.putLong(key, value);
 
-		editor.commit();
+		commitPreferences(editor);
 		return this;
 	}
 
@@ -267,7 +267,7 @@ public class SharedPreferencesHelper {
 		Editor editor = edit();
 		editor.putString(key, value);
 
-		editor.commit();
+		commitPreferences(editor);
 		return this;
 	}
 
@@ -282,7 +282,7 @@ public class SharedPreferencesHelper {
 		Editor editor = edit();
 		editor.remove(key);
 
-		editor.commit();
+		commitPreferences(editor);
 		return this;
 
 	}
@@ -292,5 +292,18 @@ public class SharedPreferencesHelper {
 		getSharedPreferences().unregisterOnSharedPreferenceChangeListener(
 				listener);
 		return this;
+	}
+
+	@SuppressLint("NewApi")
+	private static void commitPreferences(Editor editor) {
+		if (isGingerbreadOrLater())
+			editor.apply();
+		else
+			editor.commit();
+	}
+
+	@SuppressLint("NewApi")
+	private static boolean isGingerbreadOrLater() {
+		return android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD;
 	}
 }
