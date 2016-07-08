@@ -29,6 +29,7 @@ import android.view.WindowManager;
 
 import com.alibaba.fastjson.JSON;
 import com.stupid.method.util.FileUtils;
+import com.stupid.method.util.SharedPreferencesHelper;
 import com.stupid.method.util.XLog;
 
 public class AppManager extends Application {
@@ -47,7 +48,7 @@ public class AppManager extends Application {
 	private static AppManager instance = null;
 	private Point screenSize;
 	private int versionCode = -1;
-	private SharedPreferences sharedPreferences;
+
 	private ExecutorService mExecutor = Executors.newFixedThreadPool(3);
 	private Handler mHandler = new Handler();
 
@@ -309,7 +310,7 @@ public class AppManager extends Application {
 	}
 
 	public AppManager setXmlBoolean(Object key, boolean value) {
-		getSharedPreferences().edit().putBoolean(getKey(key), value).commit();
+		getSharedPreferences().putBoolean(getKey(key), value);
 		return this;
 	}
 
@@ -323,19 +324,13 @@ public class AppManager extends Application {
 
 	public AppManager setXmlInt(Object key, int value) {
 
-		getSharedPreferences().edit().putInt(getKey(key), value).commit();
+		getSharedPreferences().putInt(getKey(key), value);
 		return this;
 
 	}
 
-	public AppManager setXmlJSON(Object key, Object value) {
-
-		getSharedPreferences()
-				.edit()
-				.putString(
-						getKey(key),
-						value instanceof String ? value.toString() : JSON
-								.toJSONString(value)).commit();
+	public AppManager setXmlJSON(String key, Object value) {
+		getSharedPreferences().putJSON(key, value);
 		return this;
 	}
 
@@ -354,9 +349,8 @@ public class AppManager extends Application {
 
 	}
 
-	public AppManager setXmlString(Object key, String value) {
-
-		getSharedPreferences().edit().putString(getKey(key), value).commit();
+	public AppManager setXmlString(String key, String value) {
+		getSharedPreferences().putString(key, value);
 		return this;
 	}
 
@@ -370,15 +364,9 @@ public class AppManager extends Application {
 		return getSharedPreferences().getString(getKey(key), defValue);
 	}
 
-	public SharedPreferences getSharedPreferences() {
-		if (sharedPreferences == null)
-			sharedPreferences = getSharedPreferences("appData",
-					Context.MODE_PRIVATE);
-		return sharedPreferences;
-	}
+	public SharedPreferencesHelper getSharedPreferences() {
 
-	public void setSharedPreferences(SharedPreferences sharedPreferences) {
-		this.sharedPreferences = sharedPreferences;
+		return SharedPreferencesHelper.getCache(this, "AppData");
 	}
 
 	public File getPath() {
